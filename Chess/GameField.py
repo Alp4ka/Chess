@@ -91,14 +91,6 @@ class GameField:
             return True
         return False
 
-    def is_not_on_ally(self, x, y, unit):
-        # Если есть враг или пустая -> true
-        if self.is_on_enemy(x, y, unit.fraction):
-            return True
-        elif isinstance(self.field[y][x], Figure.Unit):
-            return True
-        return False
-
     def is_on_empty(self, x, y):
         return isinstance(self.field[y][x], Figure.Empty)
 
