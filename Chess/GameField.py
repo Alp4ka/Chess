@@ -13,21 +13,17 @@ class GameField:
         #self.game_field[0][0] =
 
     def init_units(self):
-        self.set_item(row=0, column='a', value=Figure.King(field=self,
-                                                    x_pos=0,
+        self.set_item(row=0, column='e', value=Figure.King(field=self,
+                                                    x_pos=4,
                                                     y_pos=0,
                                                     fraction=Figure.Fraction.WHITE))
         self.set_item(row=0, column='d', value=Figure.Queen(field=self,
                                                      x_pos=3,
                                                      y_pos=0,
                                                      fraction=Figure.Fraction.WHITE))
-        self.set_item(row=7, column='d', value=Figure.King(field=self,
-                                                     x_pos=3,
-                                                     y_pos=7,
-                                                     fraction=Figure.Fraction.BLACK))
-        self.set_item(row=7, column='e', value=Figure.King(field=self,
-                                                     x_pos=5,
-                                                     y_pos=7,
+        self.set_item(row=1, column='e', value=Figure.King(field=self,
+                                                     x_pos=4,
+                                                     y_pos=1,
                                                      fraction=Figure.Fraction.BLACK))
 
     def is_in_bounds(self, x, y):
@@ -43,9 +39,12 @@ class GameField:
             return True
         return False
 
-    def is_on_enemy(self, x, y, unit):
-        if isinstance(self.field[y][x], Figure.Unit) and isinstance(self.field, Figure.Empty) and \
-                self.field[y][x].fraction != unit.fraction:
+    def is_on_empty(self, x, y):
+        return isinstance(self.field[y][x], Figure.Empty)
+
+    def is_on_enemy(self, x, y, fraction):
+        if isinstance(self.field[y][x], Figure.Unit) and not isinstance(self.field[y][x], Figure.Empty) and \
+                self.field[y][x].fraction != fraction:
             return True
         return False
 
