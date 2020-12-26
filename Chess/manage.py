@@ -1,4 +1,4 @@
-from Chess.Figure import *
+from GameField import *
 
 def main():
     gamefield = GameField()

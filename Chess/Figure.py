@@ -1,6 +1,6 @@
 from GameField import *
 from enum import Enum
-from Chess.Utils import *
+from Utils import *
 
 
 class Fraction(Enum):

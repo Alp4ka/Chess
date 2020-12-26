@@ -1,5 +1,5 @@
-import Chess.Figure as Figure
-from Chess.Utils import *
+import Figure as Figure
+from Utils import *
 
 class GameField:
     WIDTH = 8
