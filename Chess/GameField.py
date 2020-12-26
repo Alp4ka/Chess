@@ -147,8 +147,22 @@ class GameField:
 
 
 class MemorizedField:
-    def __init__(self, field, turn, step):
-        self.field = copy.deepcopy(field)
-        self.turn = turn
-        self.current_step = step
+    def __init__(self, gamefield):
+        self.field = [[elem.copy() for elem in row] for row in gamefield.field]
+        self.turn = copy.copy(gamefield.turn)
+        self.current_step = copy.copy(gamefield.current_step)
+
+    def __str__(self):
+        letters = "A B C D E F G H"
+        row_cnt = 1
+        result = "{} STEP \n".format(self.current_step)
+        result += "   " + letters + "\n\n"
+        for row in self.field:
+            result += str(row_cnt) + "  "
+            for elem in row:
+                result += elem.__str__() + " "
+            result += " " + str(row_cnt) + "\n"
+            row_cnt += 1
+        result += "\n   " + letters + "\n_______________________________"
+        return result
 

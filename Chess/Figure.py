@@ -1,6 +1,7 @@
 from GameField import *
 from enum import Enum
 from Utils import *
+import copy
 
 
 class Fraction(Enum):
@@ -9,27 +10,23 @@ class Fraction(Enum):
 
 
 class Unit:
-    def __init__(self):
+    '''def __init__(self):
         self.x = None
         self.y = None
         self.fraction = None
         self.game_field: GameField = None
         self.moves = []
-        self.is_alive = True
+        self.is_alive = True'''
 
-    def __init__(self, unit):
-        pass
-
-    def __init__(self, field, x, y, fraction):
+    def __init__(self, field, x, y, fraction, is_alive=True):
         self.x = convert_column_to_digit(x)
         self.y = y
         self.fraction: Fraction = fraction
         self.game_field = field
         self.moves = []
-        self.is_alive = True
+        self.is_alive = is_alive
 
     def is_blocked(self, x_pos, y_pos):
-
         dir = Point(signum(x_pos - self.x), signum(y_pos - self.y))
         current = Point(self.x + dir.x, self.y + dir.y)
         dest = Point(x_pos, y_pos)
@@ -72,13 +69,16 @@ class Unit:
 
 
 class Empty:
+    def copy(self):
+        return Empty()
+
     def __str__(self):
         return "."
 
 
 class King(Unit):
-    def __init__(self, field, x_pos, y_pos, fraction):
-        super().__init__(field, x_pos, y_pos, fraction)
+    def __init__(self, field, x_pos, y_pos, fraction, is_alive=True):
+        super().__init__(field, x_pos, y_pos, fraction, is_alive)
         self.moves = [[-1, -1],
                       [-1, 0],
                       [-1, 1],
@@ -88,6 +88,9 @@ class King(Unit):
                       [1, 0],
                       [1, 1]]
 
+    def copy(self):
+        return King(self.game_field, self.x, self.y, self.fraction, self.is_alive)
+
     def __str__(self):
         if self.fraction == Fraction.WHITE:
             return 'K'
@@ -96,12 +99,15 @@ class King(Unit):
 
 
 class Queen(Unit):
-    def __init__(self, field, x_pos, y_pos, fraction):
-        super().__init__(field, x_pos, y_pos, fraction)
+    def __init__(self, field, x_pos, y_pos, fraction, is_alive=True):
+        super().__init__(field, x_pos, y_pos, fraction, is_alive)
         self.moves = []
         for i in range(-field.WIDTH + 1, field.WIDTH, 1):
             for j in range(-field.WIDTH + 1, field.WIDTH, 1):
                 self.moves.append([i, j])
+
+    def copy(self):
+        return Queen(self.game_field, self.x, self.y, self.fraction, self.is_alive)
 
     def __str__(self):
         if self.fraction == Fraction.WHITE:
@@ -110,36 +116,57 @@ class Queen(Unit):
             return 'q'
 
 
-class PawnBlack(Unit):
-    def __init__(self, field, x_pos, y_pos):
-        super().__init__(field, x_pos, y_pos, Fraction.BLACK)
+class Pawn(Unit):
+    def __init__(self, field, x, y, fraction, is_alive=True):
+        super().__init__(field, x, y, fraction, is_alive)
         self.first_step = True
-        self.moves = [[-1, 0], [-2, 0]]
-        self.attack_moves = [[-1, 1], [-1, -1]]
+#доделать
+    def move(self, x_pos, y_pos):
+        if not self.is_blocked(x_pos, y_pos):
+            self.game_field.field[self.y][self.x] = Empty()
+            self.game_field.field[y_pos][x_pos] = self
+        else:
+            raise ValueError("Нельзя проходить через другие фигуры")
 
     def __str__(self):
         return 'p'
 
 
-class PawnWhite(Unit):
-    def __init__(self, field, x_pos, y_pos):
-        super().__init__(field, x_pos, y_pos, Fraction.WHITE)
-        self.first_step = True
+class PawnBlack(Pawn):
+    def __init__(self, field, x_pos, y_pos, fraction = Fraction.BLACK, is_alive=True):
+        super().__init__(field, x_pos, y_pos, fraction, is_alive)
+        self.moves = [[-1, 0], [-2, 0]]
+        self.attack_moves = [[-1, 1], [-1, -1]]
+
+    def copy(self):
+        temp_pawn = PawnBlack(self.game_field, self.x, self.y, self.fraction, self.is_alive)
+        temp_pawn.first_step = self.first_step
+        return temp_pawn
+
+
+class PawnWhite(Pawn):
+    def __init__(self, field, x_pos, y_pos, fraction = Fraction.WHITE, is_alive=True):
+        super().__init__(field, x_pos, y_pos, fraction, is_alive)
         self.moves = [[1, 0], [2, 0]]
         self.attack_moves = [[1, 1], [1, -1]]
 
-    def __str__(self):
-        return 'P'
+    def copy(self):
+        temp_pawn = PawnWhite(self.game_field, self.x, self.y, self.fraction, self.is_alive)
+        temp_pawn.first_step = self.first_step
+        return temp_pawn
 
 
 class Rook(Unit):
-    def __init__(self, field, x_pos, y_pos, fraction):
-        super().__init__(field, x_pos, y_pos, fraction)
+    def __init__(self, field, x_pos, y_pos, fraction, is_alive=True):
+        super().__init__(field, x_pos, y_pos, fraction, is_alive)
         self.moves = []
         for i in range(-field.WIDTH + 1, field.WIDTH, 1):
             if i != 0:
                 self.moves.append([i, 0])
                 self.moves.append([0, i])
+
+    def copy(self):
+        return Rook(self.game_field, self.x, self.y, self.fraction, self.is_alive)
 
     def __str__(self):
         if self.fraction == Fraction.WHITE:
@@ -149,8 +176,8 @@ class Rook(Unit):
 
 
 class Bishop(Unit):
-    def __init__(self, field, x_pos, y_pos, fraction):
-        super().__init__(field, x_pos, y_pos, fraction)
+    def __init__(self, field, x_pos, y_pos, fraction, is_alive=True):
+        super().__init__(field, x_pos, y_pos, fraction, is_alive)
         self.moves = []
         for i in range(1, field.WIDTH, 1):
             if i != 0:
@@ -158,6 +185,9 @@ class Bishop(Unit):
                 self.moves.append([-i, i])
                 self.moves.append([i, -i])
                 self.moves.append([-i, -i])
+
+    def copy(self):
+        return Bishop(self.game_field, self.x, self.y, self.fraction, self.is_alive)
 
     def __str__(self):
         if self.fraction == Fraction.WHITE:
@@ -167,8 +197,8 @@ class Bishop(Unit):
 
 
 class Knight(Unit):
-    def __init__(self, field, x_pos, y_pos, fraction):
-        super().__init__(field, x_pos, y_pos, fraction)
+    def __init__(self, field, x_pos, y_pos, fraction, is_alive=True):
+        super().__init__(field, x_pos, y_pos, fraction, is_alive)
         self.moves = [[-2, 1],
                       [-2, -1],
                       [-1, -2],
@@ -177,6 +207,12 @@ class Knight(Unit):
                       [2, 1],
                       [-1, 2],
                       [1, 2]]
+
+    def copy(self):
+        return Knight(self.game_field, self.x, self.y, self.fraction, self.is_alive)
+
+    def is_blocked(self, x, y):
+        return False
 
     def __str__(self):
         if self.fraction == Fraction.WHITE:
