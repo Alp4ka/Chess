@@ -70,9 +70,12 @@ class King(Unit):
 
 
 class Queen(Unit):
-    def __init__(self, x_pos, y_pos, fraction):
-        super.__init__(x_pos, y_pos, fraction)
-
+    def __init__(self, field, x_pos, y_pos, fraction):
+        super().__init__(field, x_pos, y_pos, fraction)
+        self.moves = []
+        for i in range(-field.WIDTH+1, field.WIDTH, 1):
+            for j in range(-field.WIDTH+1, field.WIDTH, 1):
+                self.moves.append([i, j])
 
     def __str__(self):
         if self.fraction == Fraction.WHITE:
