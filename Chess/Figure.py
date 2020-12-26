@@ -83,3 +83,24 @@ class Queen(Unit):
         else:
             return 'q'
 
+
+class PawnBlack(Unit):
+    def __init__(self, field, x_pos, y_pos):
+        super().__init__(field, x_pos, y_pos, Fraction.BLACK)
+        self.first_step = True
+        self.moves = [[-1, 0], [-2, 0]]
+        self.attack_moves = [[-1, 1], [-1, -1]]
+
+    def __str__(self):
+        return 'p'
+
+
+class PawnWhite(Unit):
+    def __init__(self, field, x_pos, y_pos, fraction):
+        super().__init__(field, x_pos, y_pos, fraction)
+        self.first_step = True
+        self.moves = [[1, 0], [2, 0]]
+        self.attack_moves = [[1, 1], [1, -1]]
+
+    def __str__(self):
+        return 'P'
