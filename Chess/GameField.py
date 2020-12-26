@@ -2,6 +2,7 @@ import Figure as Figure
 import copy
 from Utils import *
 
+
 class GameField:
     WIDTH = 8
     alphabet = "abcdefgh"
@@ -9,6 +10,9 @@ class GameField:
     def __init__(self):
         self.field = [[Figure.Empty()] * self.WIDTH for x in range(self.WIDTH)]
         self.init_units()
+        self.eaten = dict()
+        self.eaten['white'] = list()
+        self.eaten['black'] = list()
         self.selected = None
         self.turn = Figure.Fraction.WHITE
         self.memory = list()
@@ -131,10 +135,10 @@ class GameField:
         self.field[row][column] = value
 
     def clean_empty(self):
-        for row in self.field:
-            for el in row:
-                if isinstance(el, Figure.Path):
-                    el = Figure.Empty
+        for r in range(self.WIDTH):
+            for c in range(self.WIDTH):
+                if isinstance(self.field[r][c], Figure.Path):
+                    self.field[r][c] = Figure.Empty()
 
     def select_unit(self, column, row):
         choice = self.get_item(column, row)
