@@ -1,4 +1,4 @@
-from GameField import *
+from Chess.GameField import *
 from enum import Enum
 
 
