@@ -32,16 +32,21 @@ class Unit:
         dest = Point(x_pos, y_pos)
 
         while not current.Equals(dest):
-            if isinstance(self.game_field.field[current.y][current.x], Unit) and \
-                    not isinstance(self.game_field.field[current.y][current.x], Empty):
-                return True
-            current.y += dir.y
-            current.x += dir.x
+            if self.game_field.is_in_bounds(current.x, current.y):
+                if isinstance(self.game_field.field[current.y][current.x], Unit) and \
+                        not isinstance(self.game_field.field[current.y][current.x], Empty):
+                    return True
+                current.y += dir.y
+                current.x += dir.x
+            else:
+                break
         return False
 
     def attack(self, x_pos, y_pos):
         if not self.is_blocked(x_pos, y_pos):
             self.game_field.field[y_pos][x_pos].is_alive = False
+            self.x = x_pos
+            self.y = y_pos
             self.game_field.field[self.y][self.x] = Empty()
             self.game_field.field[y_pos][x_pos] = self
             print("Attacked and killed motherfucker")
@@ -51,6 +56,8 @@ class Unit:
     def move(self, x_pos, y_pos):
         if not self.is_blocked(x_pos, y_pos):
             self.game_field.field[self.y][self.x] = Empty()
+            self.x = x_pos
+            self.y = y_pos
             self.game_field.field[y_pos][x_pos] = self
         else:
             raise ValueError("Нельзя проходить через другие фигуры")
@@ -127,11 +134,12 @@ class Queen(Unit):
         else:
             return 'q'
 
-
+#TODO: override show_paths
 class Pawn(Unit):
     def __init__(self, field, x, y, fraction, is_alive=True):
         super().__init__(field, x, y, fraction, is_alive)
         self.first_step = True
+        
 #доделать
     def move(self, x_pos, y_pos):
         if not self.is_blocked(x_pos, y_pos):
