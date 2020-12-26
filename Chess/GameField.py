@@ -127,6 +127,12 @@ class GameField:
 
         self.field[row][column] = value
 
+    def clean_empty(self):
+        for row in self.field:
+            for el in row:
+                if isinstance(el, Figure.Path):
+                    el = Figure.Empty
+
     def select_unit(self, column, row):
         choice = self.get_item(column, row)
         if isinstance(choice, Figure.Unit):
@@ -135,6 +141,10 @@ class GameField:
             self.selected = choice
         else:
             raise ValueError('На {} {} нет доступной фигуры'.format(column, row))
+
+        self.clean_empty()
+
+        choice.show_paths()
 
     def switch_turn(self):
         if self.turn == Figure.Fraction.WHITE:

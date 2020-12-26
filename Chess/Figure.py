@@ -26,7 +26,6 @@ class Unit:
         self.is_alive = True
 
     def is_blocked(self, x_pos, y_pos):
-
         dir = Point(signum(x_pos - self.x), signum(y_pos - self.y))
         current = Point(self.x + dir.x, self.y + dir.y)
         dest = Point(x_pos, y_pos)
@@ -67,11 +66,23 @@ class Unit:
         else:
             raise ValueError("Недоступный ход.")
 
+    def show_paths(self):
+        pos = Point(self.x, self.y)
+        for move in self.moves:
+            pos_x = pos.x + move[1]
+            pos_y = pos.y + move[0]
+            if self.game_field.is_in_bounds(pos_x, pos_y):
+                if not self.is_blocked(pos_x, pos_y):
+                    if isinstance(self.game_field.field[pos_y][pos_x], Empty):
+                        self.game_field.field[pos_y][pos_x] = Path()
 
 class Empty:
     def __str__(self):
         return "."
 
+class Path(Empty):
+    def __str__(self):
+        return "*"
 
 class King(Unit):
     def __init__(self, field, x_pos, y_pos, fraction):
@@ -177,6 +188,8 @@ class Knight(Unit):
                       [-1, 2],
                       [1, 2]]
 
+    def is_blocked(self, x_pos, y_pos):
+        return False
     def __str__(self):
         if self.fraction == Fraction.WHITE:
             return 'N'
