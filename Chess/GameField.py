@@ -1,4 +1,5 @@
 import Figure as Figure
+import copy
 from Utils import *
 
 class GameField:
@@ -10,6 +11,8 @@ class GameField:
         self.init_units()
         self.selected = None
         self.turn = Figure.Fraction.WHITE
+        self.memory = list()
+        self.current_step = 0
         #self.game_field[0][0] =
 
     def init_units(self):
@@ -151,6 +154,8 @@ class GameField:
 
 
 class MemorizedField:
-    def __init__(self, field, turn):
-        self.field = [row[:] for row in field]
+    def __init__(self, field, turn, step):
+        self.field = copy.deepcopy(field)
         self.turn = turn
+        self.current_step = step
+

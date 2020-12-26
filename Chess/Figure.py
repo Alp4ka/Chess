@@ -17,6 +17,9 @@ class Unit:
         self.moves = []
         self.is_alive = True
 
+    def __init__(self, unit):
+        pass
+
     def __init__(self, field, x, y, fraction):
         self.x = convert_column_to_digit(x)
         self.y = y
@@ -24,6 +27,8 @@ class Unit:
         self.game_field = field
         self.moves = []
         self.is_alive = True
+
+
 
     def attack(self, x_pos, y_pos):
         self.game_field.field[self.y][self.x] = Empty()
@@ -59,12 +64,10 @@ class King(Unit):
                       [-1, 0],
                       [-1, 1],
                       [0, -1],
-                      [0, 0],
                       [0, 1],
                       [1, -1],
                       [1, 0],
-                      [1, 1],
-                      ]
+                      [1, 1]]
 
     def __str__(self):
         if self.fraction == Fraction.WHITE:
