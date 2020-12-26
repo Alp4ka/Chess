@@ -11,9 +11,16 @@ def main():
     print(gamefield)
     print()
    # gamefield.selected.move_or_attack('a', 2)
-    gamefield.select_unit('e', 1)
-    gamefield.selected.move_or_attack('e', 3)
-    gamefield.select_unit('e', 3)
+    gamefield.set_item(row=6, column='e', value=Figure.PawnWhite(field=gamefield,
+                                                        x_pos=4,
+                                                        y_pos=6,
+                                                        fraction=Figure.Fraction.WHITE))
+    gamefield.select_unit('e', 6)
+    #gamefield.selected.move_or_attack('d', 6)
+    #gamefield.selected.move_or_attack('e', 7)
+    #gamefield.selected.move_or_attack('d', 8)
+    #gamefield.selected.move_or_attack('e', 7)
+    #gamefield.selected.move_or_attack('e', 3)
     #gamefield.selected.move_or_attack('e', 4)
     print(gamefield)
     print()
