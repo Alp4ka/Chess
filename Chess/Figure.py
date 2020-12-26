@@ -30,7 +30,9 @@ class Unit:
                 if self.game_field.is_on_enemy(x_pos, y_pos, self):
                     self.attack()
                 else:
-                    self.game_field.field
+                    self.game_field.field[self.y][self.x] = Empty()
+                    self.game_field.field[y_pos][x_pos] = self
+
         else:
             raise ValueError('Недоступный ход.')
 

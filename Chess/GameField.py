@@ -14,15 +14,15 @@ class GameField:
 
     def init_units(self):
         self.set_item(row=0, column='e', value=Figure.King(field=self,
-                                                    x_pos=5,
+                                                    x_pos=4,
                                                     y_pos=0,
                                                     fraction=Figure.Fraction.WHITE))
         self.set_item(row=0, column='d', value=Figure.Queen(field=self,
-                                                     x_pos=4,
+                                                     x_pos=3,
                                                      y_pos=0,
                                                      fraction=Figure.Fraction.WHITE))
         self.set_item(row=7, column='d', value=Figure.King(field=self,
-                                                     x_pos=4,
+                                                     x_pos=3,
                                                      y_pos=7,
                                                      fraction=Figure.Fraction.BLACK))
         self.set_item(row=7, column='e', value=Figure.King(field=self,
