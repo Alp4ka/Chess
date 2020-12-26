@@ -2,6 +2,12 @@ from Chess.GameField import *
 from enum import Enum
 from Chess.Utils import *
 
+
+class Fraction(Enum):
+    WHITE = 'white'
+    BLACK = 'black'
+
+
 class Unit:
     def __init__(self):
         self.x = None
@@ -14,7 +20,7 @@ class Unit:
     def __init__(self, field, x, y, fraction):
         self.x = convert_column_to_digit(x)
         self.y = y
-        self.fraction = fraction
+        self.fraction: Fraction = fraction
         self.game_field = field
         self.moves = []
         self.is_alive = True
@@ -26,26 +32,20 @@ class Unit:
     def step(self, x_pos, y_pos):
         x_pos = convert_column_to_digit(x_pos)
         if [y_pos - self.y, x_pos - self.x] in self.moves:
-            if self.game_field.is_not_on_ally(x_pos, y_pos, self):
+            if not self.game_field.is_not_on_ally(x_pos, y_pos, self):
                 if self.game_field.is_on_enemy(x_pos, y_pos, self):
                     self.attack()
                 else:
-                    self.game_field.field[self.y][self.x] = Empty()
-                    self.game_field.field[y_pos][x_pos] = self
-
+                    if self.game_field.is_in_bounds(x_pos, y_pos):
+                        self.game_field.field[self.y][self.x] = Empty()
+                        self.game_field.field[y_pos][x_pos] = self
+            else:
+                raise ValueError("Недоступный ход.")
         else:
             raise ValueError('Недоступный ход.')
 
 
-class Fraction(Enum):
-    WHITE = 'white'
-    BLACK = 'black'
-
-
 class Empty:
-    def __init__(self):
-        pass
-
     def __str__(self):
         return "."
 
@@ -53,7 +53,6 @@ class Empty:
 class King(Unit):
     def __init__(self, field, x_pos, y_pos, fraction):
         super().__init__(field, x_pos, y_pos, fraction)
-        #[y, x]
         self.moves = [[-1, -1],
                       [-1, 0],
                       [-1, 1],

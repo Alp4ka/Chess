@@ -5,7 +5,7 @@ def main():
     gamefield = GameField()
     print(gamefield)
     print()
-    gamefield.select_unit('d', 0)
+    gamefield.select_unit('a', 0)
     gamefield.selected.step('a', 1)
     print(gamefield)
 main()
