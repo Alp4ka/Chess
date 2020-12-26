@@ -4,8 +4,8 @@ def main():
     gamefield = GameField()
     print(gamefield)
     print()
-    gamefield.select_unit('a', 0)
-    gamefield.selected.move_or_attack('b', 0)
+    gamefield.select_unit('a', 1)
+    gamefield.selected.move_or_attack('a', 2)
     print(gamefield)
 
 main()

@@ -94,15 +94,8 @@ class GameField:
             return True
         return False
 
-    def is_not_on_ally(self, x, y, unit):
-        # Если есть враг или пустая -> true
-        if self.is_on_enemy(x, y, unit.fraction):
-            return True
-        elif isinstance(self.field[y][x], Figure.Unit):
-            return True
-        return False
-
     def is_on_empty(self, x, y):
+
         return isinstance(self.field[y][x], Figure.Empty)
 
     def is_on_enemy(self, x, y, unit):
@@ -141,10 +134,10 @@ class GameField:
         choice = self.get_item(column, row)
         if isinstance(choice, Figure.Unit):
             if choice.fraction != self.turn:
-                raise ValueError('На {} {} нет дсоутпной фигуры'.format(column, row))
+                raise ValueError('На {} {} нет доступной фигуры'.format(column, row))
             self.selected = choice
         else:
-            raise ValueError('На {} {} нет дсоутпной фигуры'.format(column, row))
+            raise ValueError('На {} {} нет доступной фигуры'.format(column, row))
 
     def switch_turn(self):
         if self.turn == Figure.Fraction.WHITE:

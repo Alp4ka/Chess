@@ -28,16 +28,35 @@ class Unit:
         self.moves = []
         self.is_alive = True
 
+    def is_blocked(self, x_pos, y_pos):
 
+        dir = Point(signum(x_pos - self.x), signum(y_pos - self.y))
+        current = Point(self.x + dir.x, self.y + dir.y)
+        dest = Point(x_pos, y_pos)
+
+        while not current.Equals(dest):
+            if isinstance(self.game_field.field[current.y][current.x], Unit) and \
+                    not isinstance(self.game_field.field[current.y][current.x], Empty):
+                return True
+            current.y += dir.y
+            current.x += dir.x
+        return False
 
     def attack(self, x_pos, y_pos):
-        self.game_field.field[self.y][self.x] = Empty()
-        self.game_field.field[y_pos][x_pos] = self
-        print("Attacked and killed motherfucker")
+        if not self.is_blocked(x_pos, y_pos):
+            self.game_field.field[y_pos][x_pos].is_alive = False
+            self.game_field.field[self.y][self.x] = Empty()
+            self.game_field.field[y_pos][x_pos] = self
+            print("Attacked and killed motherfucker")
+        else:
+            raise ValueError("Нельзя проходить через другие фигуры")
 
     def move(self, x_pos, y_pos):
-        self.game_field.field[self.y][self.x] = Empty()
-        self.game_field.field[y_pos][x_pos] = self
+        if not self.is_blocked(x_pos, y_pos):
+            self.game_field.field[self.y][self.x] = Empty()
+            self.game_field.field[y_pos][x_pos] = self
+        else:
+            raise ValueError("Нельзя проходить через другие фигуры")
 
     def move_or_attack(self, x_pos, y_pos):
         x_pos = convert_column_to_digit(x_pos)
@@ -80,8 +99,8 @@ class Queen(Unit):
     def __init__(self, field, x_pos, y_pos, fraction):
         super().__init__(field, x_pos, y_pos, fraction)
         self.moves = []
-        for i in range(-field.WIDTH+1, field.WIDTH, 1):
-            for j in range(-field.WIDTH+1, field.WIDTH, 1):
+        for i in range(-field.WIDTH + 1, field.WIDTH, 1):
+            for j in range(-field.WIDTH + 1, field.WIDTH, 1):
                 self.moves.append([i, j])
 
     def __str__(self):
@@ -117,7 +136,7 @@ class Rook(Unit):
     def __init__(self, field, x_pos, y_pos, fraction):
         super().__init__(field, x_pos, y_pos, fraction)
         self.moves = []
-        for i in range(-field.WIDTH+1, field.WIDTH, 1):
+        for i in range(-field.WIDTH + 1, field.WIDTH, 1):
             if i != 0:
                 self.moves.append([i, 0])
                 self.moves.append([0, i])
