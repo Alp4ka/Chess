@@ -11,12 +11,10 @@ def main():
     print(gamefield)
     print()
    # gamefield.selected.move_or_attack('a', 2)
-    gamefield.set_item(row=3, column='e', value=Figure.Queen(field=gamefield,
-                                                         x_pos='e',
-                                                         y_pos=3,
-                                                         fraction = Fraction.WHITE,
-                                                            is_alive = True))
+    gamefield.select_unit('e', 1)
+    gamefield.selected.move_or_attack('e', 3)
     gamefield.select_unit('e', 3)
+    #gamefield.selected.move_or_attack('e', 4)
     print(gamefield)
     print()
     # while True:

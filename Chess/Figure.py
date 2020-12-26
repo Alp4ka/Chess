@@ -10,14 +10,6 @@ class Fraction(Enum):
 
 
 class Unit:
-    '''def __init__(self):
-        self.x = None
-        self.y = None
-        self.fraction = None
-        self.game_field: GameField = None
-        self.moves = []
-        self.is_alive = True'''
-
     def __init__(self, field, x, y, fraction, is_alive=True):
         self.x = convert_column_to_digit(x)
         self.y = y
@@ -84,6 +76,7 @@ class Unit:
                     if isinstance(self.game_field.field[pos_y][pos_x], Empty):
                         self.game_field.field[pos_y][pos_x] = Path()
 
+
 class Empty:
     def copy(self):
         return Empty()
@@ -91,9 +84,11 @@ class Empty:
     def __str__(self):
         return "."
 
+
 class Path(Empty):
     def __str__(self):
         return "*"
+
 
 class King(Unit):
     def __init__(self, field, x_pos, y_pos, fraction, is_alive=True):
@@ -141,27 +136,36 @@ class Queen(Unit):
         else:
             return 'q'
 
-#TODO: override show_paths
+
 class Pawn(Unit):
     def __init__(self, field, x_pos, y_pos, fraction, is_alive):
         super().__init__(field, x_pos, y_pos, fraction, is_alive)
+        self.moves = None
+        self.attack_moves = None
         self.first_step = True
         
 #доделать
-    def move(self, x_pos, y_pos):
-        if not self.is_blocked(x_pos, y_pos):
-            self.game_field.field[self.y][self.x] = Empty()
-            self.game_field.field[y_pos][x_pos] = self
+    def move_or_attack(self, x_pos, y_pos):
+        x_pos = convert_column_to_digit(x_pos)
+        if (self.first_step and ([y_pos - self.y, x_pos - self.x] in self.moves or\
+                            [y_pos - self.y, x_pos - self.x] in self.extra_move)) or\
+                (not self.first_step and [y_pos - self.y, x_pos - self.x] in self.moves):
+            if self.game_field.is_on_empty(x_pos, y_pos):
+                self.move(x_pos, y_pos)
+            elif self.game_field.is_on_enemy(x_pos, y_pos, self):
+                self.attack(x_pos, y_pos)
+            else:
+                raise ValueError("Недоступный ход.")
+            self.first_step = False;
         else:
-            raise ValueError("Нельзя проходить через другие фигуры")
-
-
+            raise ValueError("Недоступный ход.")
 
 
 class PawnBlack(Pawn):
     def __init__(self, field, x_pos, y_pos, fraction = Fraction.BLACK, is_alive=True):
         super().__init__(field, x_pos, y_pos, fraction, is_alive)
-        self.moves = [[-1, 0], [-2, 0]]
+        self.moves = [[-1, 0]]
+        self.exra_move = [[-2, 0]]
         self.attack_moves = [[-1, 1], [-1, -1]]
 
     def copy(self):
@@ -176,7 +180,8 @@ class PawnBlack(Pawn):
 class PawnWhite(Pawn):
     def __init__(self, field, x_pos, y_pos, fraction = Fraction.WHITE, is_alive=True):
         super().__init__(field, x_pos, y_pos, fraction, is_alive)
-        self.moves = [[1, 0], [2, 0]]
+        self.moves = [[1, 0]]
+        self.extra_move = [[2, 0]]
         self.attack_moves = [[1, 1], [1, -1]]
 
     def copy(self):
@@ -186,6 +191,7 @@ class PawnWhite(Pawn):
 
     def __str__(self):
         return 'P'
+
 
 class Rook(Unit):
     def __init__(self, field, x_pos, y_pos, fraction, is_alive=True):
