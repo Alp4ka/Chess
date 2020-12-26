@@ -1,4 +1,4 @@
-from Chess.GameField import *
+from GameField import *
 from enum import Enum
 
 
@@ -96,8 +96,8 @@ class PawnBlack(Unit):
 
 
 class PawnWhite(Unit):
-    def __init__(self, field, x_pos, y_pos, fraction):
-        super().__init__(field, x_pos, y_pos, fraction)
+    def __init__(self, field, x_pos, y_pos):
+        super().__init__(field, x_pos, y_pos, Fraction.BLACK)
         self.first_step = True
         self.moves = [[1, 0], [2, 0]]
         self.attack_moves = [[1, 1], [1, -1]]

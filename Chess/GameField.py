@@ -1,4 +1,4 @@
-import Chess.Figure as Figure
+import Figure as Figure
 
 class GameField:
     WIDTH = 8
@@ -27,6 +27,14 @@ class GameField:
                                                      x_pos=5,
                                                      y_pos=7,
                                                      fraction=Figure.Fraction.BLACK))
+        for column in range(self.WIDTH):
+            self.set_item(row=6, column=column, value=Figure.PawnBlack(field=self,
+                                                                            x_pos=column,
+                                                                            y_pos=6))
+        for column in range(self.WIDTH):
+            self.set_item(row=1, column=column, value=Figure.PawnWhite(field=self,
+                                                                            x_pos=column,
+                                                                            y_pos=1))
 
     def is_in_bounds(self, x, y):
         if 0 <= x < self.WIDTH and 0 <= y < self.WIDTH:
@@ -52,14 +60,14 @@ class GameField:
         letters = "A B C D E F G H"
         row_cnt = 1
         result = ""
-        result += "  " + letters + "\n"
+        result += "   " + letters + "\n\n"
         for row in self.field:
-            result += str(row_cnt) + " "
+            result += str(row_cnt) + "  "
             for elem in row:
                 result += elem.__str__() + " "
-            result += str(row_cnt) + "\n"
+            result += " " + str(row_cnt) + "\n"
             row_cnt += 1
-        result += "  " + letters
+        result += "\n   " + letters
         return result
 
     def get_item(self, column, row):
