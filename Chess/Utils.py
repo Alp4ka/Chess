@@ -1,6 +1,6 @@
 WIDTH = 8
 
-def convert_column_to_digit(column: str):
+def convert_column_to_digit(column):
     alphabet = "abcdefgh"
     if type(column) == str:
         if alphabet.find(column) != -1:
