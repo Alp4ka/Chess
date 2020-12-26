@@ -1,14 +1,16 @@
-import Figure as Figure
+import Chess.Figure as Figure
+from Chess.Utils import *
 
 class GameField:
     WIDTH = 8
+    alphabet = "abcdefgh"
 
     def __init__(self):
         self.field = [[Figure.Empty()] * self.WIDTH for x in range(self.WIDTH)]
         self.init_units()
         self.selected = None
         self.turn = Figure.Fraction.WHITE
-        #self.field[0][0] =
+        #self.game_field[0][0] =
 
     def init_units(self):
         self.set_item(row=0, column='e', value=Figure.King(field=self,
@@ -87,22 +89,21 @@ class GameField:
     def is_in_bounds(self, x, y):
         if 0 <= x < self.WIDTH and 0 <= y < self.WIDTH:
             return True
-        else:
-            return False
+        return False
 
     def is_not_on_ally(self, x, y, unit):
+        # Если есть враг или пустая -> true
         if self.is_on_enemy(x, y, unit.fraction):
             return True
-        elif self.field[y][x] is not Figure.Unit:
+        elif isinstance(self.field[y][x], Figure.Unit):
             return True
-        else:
-            return False
+        return False
 
     def is_on_enemy(self, x, y, unit):
-        if self.field[y][x] is Figure.Unit and self.field[y][x].fraction != unit.fraction:
+        if isinstance(self.field[y][x], Figure.Unit) and isinstance(self.field, Figure.Empty) and \
+                self.field[y][x].fraction != unit.fraction:
             return True
-        else:
-            return False
+        return False
 
     def __str__(self):
         letters = "A B C D E F G H"
@@ -119,37 +120,11 @@ class GameField:
         return result
 
     def get_item(self, column, row):
-        if type(column) == str:
-            alphabet = "abcdefgh"
-            if alphabet.find(column) != -1:
-                column = alphabet.find(column)
-            else:
-                raise ValueError('Неверное значение для столбца ' + column)
-        elif type(column) == int:
-            column = int(column)
-            if column >= self.WIDTH or column < 0:
-                raise ValueError('Неверное значение для столбца' + column)
-        else:
-            raise ValueError('Неверное значение для столбца ' + column)
-
-        if row is not int or row >= self.WIDTH or row < 0:
-            raise ValueError('Неверное значение для строки ' + row)
-
+        column = convert_column_to_digit(column)
         return self.field[row][column]
 
     def set_item(self, column, row, value):
-        if type(column) == str:
-            alphabet = "abcdefgh"
-            if alphabet.find(column) != -1:
-                column = alphabet.find(column)
-            else:
-                raise ValueError('Неверное значение для столбца ' + column)
-        elif type(column) == int:
-            column = int(column)
-            if column >= self.WIDTH or column < 0:
-                raise ValueError('Неверное значение для столбца' + column)
-        else:
-            raise ValueError('Неверное значение для столбца ' + column)
+        column = convert_column_to_digit(column)
 
         if type(row) != int or row >= self.WIDTH or row < 0:
             raise ValueError('Неверное значение для строки ' + row)
@@ -158,7 +133,7 @@ class GameField:
 
     def select_unit(self, column, row):
         choice = self.get_item(column, row)
-        if choice is Figure.Unit:
+        if isinstance(choice, Figure.Unit):
             if choice.fraction != self.turn:
                 raise ValueError('На {} {} нет дсоутпной фигуры'.format(column, row))
             self.selected = choice
