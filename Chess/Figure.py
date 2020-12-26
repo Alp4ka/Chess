@@ -25,23 +25,26 @@ class Unit:
         self.moves = []
         self.is_alive = True
 
-    def attack(self):
-        pass
+    def attack(self, x_pos, y_pos):
+        self.game_field.field[self.y][self.x] = Empty()
+        self.game_field.field[y_pos][x_pos] = self
+        print("Attacked and killed motherfucker")
+
+    def move(self, x_pos, y_pos):
+        self.game_field.field[self.y][self.x] = Empty()
+        self.game_field.field[y_pos][x_pos] = self
 
     def move_or_attack(self, x_pos, y_pos):
         x_pos = convert_column_to_digit(x_pos)
         if [y_pos - self.y, x_pos - self.x] in self.moves:
-            if not self.game_field.is_not_on_ally(x_pos, y_pos, self):
-                if self.game_field.is_on_enemy(x_pos, y_pos, self):
-                    self.attack()
-                else:
-                    if self.game_field.is_in_bounds(x_pos, y_pos):
-                        self.game_field.field[self.y][self.x] = Empty()
-                        self.game_field.field[y_pos][x_pos] = self
+            if self.game_field.is_on_empty(x_pos, y_pos):
+                self.move(x_pos, y_pos)
+            elif self.game_field.is_on_enemy(x_pos, y_pos, self):
+                self.attack(x_pos, y_pos)
             else:
                 raise ValueError("Недоступный ход.")
         else:
-            raise ValueError('Недоступный ход.')
+            raise ValueError("Недоступный ход.")
 
 
 class Empty:

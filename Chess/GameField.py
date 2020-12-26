@@ -99,9 +99,12 @@ class GameField:
             return True
         return False
 
-    def is_on_enemy(self, x, y, unit):
-        if isinstance(self.field[y][x], Figure.Unit) and isinstance(self.field, Figure.Empty) and \
-                self.field[y][x].fraction != unit.fraction:
+    def is_on_empty(self, x, y):
+        return isinstance(self.field[y][x], Figure.Empty)
+
+    def is_on_enemy(self, x, y, fraction):
+        if isinstance(self.field[y][x], Figure.Unit) and not isinstance(self.field[y][x], Figure.Empty) and \
+                self.field[y][x].fraction != fraction:
             return True
         return False
 
