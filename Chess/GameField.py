@@ -10,9 +10,25 @@ class GameField:
     def __init__(self):
         self.field = [[Figure.Empty()] * self.WIDTH for x in range(self.WIDTH)]
         self.init_units()
+
+        # check['white'] = true белым ставили шах
+        # check['black'] = true черным ставили шах
+        self.check = dict()
+        self.check['white'] = False
+        self.check['black'] = False
+
+        # mate['white'] = false  белым ставили мат
+        # mate['black'] = false черным ставили мат
+        self.mate = dict()
+        self.mate['white'] = False
+        self.mate['black'] = False
+
+        '''
         self.eaten = dict()
         self.eaten['white'] = list()
         self.eaten['black'] = list()
+        '''
+
         self.selected = None
         self.turn = Figure.Fraction.WHITE
         self.memory = list()
