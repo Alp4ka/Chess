@@ -121,9 +121,16 @@ class Queen(Unit):
     def __init__(self, field, x_pos, y_pos, fraction, is_alive=True):
         super().__init__(field, x_pos, y_pos, fraction, is_alive)
         self.moves = []
+        for i in range(1, field.WIDTH, 1):
+            if i != 0:
+                self.moves.append([i, i])
+                self.moves.append([-i, i])
+                self.moves.append([i, -i])
+                self.moves.append([-i, -i])
         for i in range(-field.WIDTH + 1, field.WIDTH, 1):
-            for j in range(-field.WIDTH + 1, field.WIDTH, 1):
-                self.moves.append([i, j])
+            if i != 0:
+                self.moves.append([i, 0])
+                self.moves.append([0, i])
 
     def copy(self):
         return Queen(self.game_field, self.x, self.y, self.fraction, self.is_alive)
@@ -136,8 +143,8 @@ class Queen(Unit):
 
 #TODO: override show_paths
 class Pawn(Unit):
-    def __init__(self, field, x, y, fraction, is_alive=True):
-        super().__init__(field, x, y, fraction, is_alive)
+    def __init__(self, field, x_pos, y_pos, fraction, is_alive):
+        super().__init__(field, x_pos, y_pos, fraction, is_alive)
         self.first_step = True
         
 #доделать
@@ -148,8 +155,7 @@ class Pawn(Unit):
         else:
             raise ValueError("Нельзя проходить через другие фигуры")
 
-    def __str__(self):
-        return 'p'
+
 
 
 class PawnBlack(Pawn):
@@ -163,6 +169,9 @@ class PawnBlack(Pawn):
         temp_pawn.first_step = self.first_step
         return temp_pawn
 
+    def __str__(self):
+        return 'p'
+
 
 class PawnWhite(Pawn):
     def __init__(self, field, x_pos, y_pos, fraction = Fraction.WHITE, is_alive=True):
@@ -175,6 +184,8 @@ class PawnWhite(Pawn):
         temp_pawn.first_step = self.first_step
         return temp_pawn
 
+    def __str__(self):
+        return 'P'
 
 class Rook(Unit):
     def __init__(self, field, x_pos, y_pos, fraction, is_alive=True):
