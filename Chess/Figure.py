@@ -37,9 +37,9 @@ class Unit:
     def attack(self, x_pos, y_pos):
         if not self.is_blocked(x_pos, y_pos):
             self.game_field.field[y_pos][x_pos].is_alive = False
+            self.game_field.field[self.y][self.x] = Empty()
             self.x = x_pos
             self.y = y_pos
-            self.game_field.field[self.y][self.x] = Empty()
             self.game_field.field[y_pos][x_pos] = self
             print("Attacked and killed motherfucker")
         else:
