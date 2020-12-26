@@ -1,4 +1,5 @@
 import Figure as Figure
+import copy
 from Utils import *
 
 class GameField:
@@ -10,6 +11,8 @@ class GameField:
         self.init_units()
         self.selected = None
         self.turn = Figure.Fraction.WHITE
+        self.memory = list()
+        self.current_step = 0
         #self.game_field[0][0] =
 
     def init_units(self):
@@ -91,16 +94,12 @@ class GameField:
             return True
         return False
 
-    def is_not_on_ally(self, x, y, unit):
-        # Если есть враг или пустая -> true
-        if self.is_on_enemy(x, y, unit.fraction):
-            return True
-        elif isinstance(self.field[y][x], Figure.Unit):
-            return True
-        return False
+    def is_on_empty(self, x, y):
+
+        return isinstance(self.field[y][x], Figure.Empty)
 
     def is_on_enemy(self, x, y, unit):
-        if isinstance(self.field[y][x], Figure.Unit) and isinstance(self.field, Figure.Empty) and \
+        if isinstance(self.field[y][x], Figure.Unit) and not isinstance(self.field[y][x], Figure.Empty) and \
                 self.field[y][x].fraction != unit.fraction:
             return True
         return False
@@ -131,14 +130,24 @@ class GameField:
 
         self.field[row][column] = value
 
+    def clean_empty(self):
+        for row in self.field:
+            for el in row:
+                if isinstance(el, Figure.Path):
+                    el = Figure.Empty
+
     def select_unit(self, column, row):
         choice = self.get_item(column, row)
         if isinstance(choice, Figure.Unit):
             if choice.fraction != self.turn:
-                raise ValueError('На {} {} нет дсоутпной фигуры'.format(column, row))
+                raise ValueError('На {} {} нет доступной фигуры'.format(column, row))
             self.selected = choice
         else:
-            raise ValueError('На {} {} нет дсоутпной фигуры'.format(column, row))
+            raise ValueError('На {} {} нет доступной фигуры'.format(column, row))
+
+        self.clean_empty()
+
+        choice.show_paths()
 
     def switch_turn(self):
         if self.turn == Figure.Fraction.WHITE:
@@ -148,6 +157,22 @@ class GameField:
 
 
 class MemorizedField:
-    def __init__(self, field, turn):
-        self.field = [row[:] for row in field]
-        self.turn = turn
+    def __init__(self, gamefield):
+        self.field = [[elem.copy() for elem in row] for row in gamefield.field]
+        self.turn = copy.copy(gamefield.turn)
+        self.current_step = copy.copy(gamefield.current_step)
+
+    def __str__(self):
+        letters = "A B C D E F G H"
+        row_cnt = 1
+        result = "{} STEP \n".format(self.current_step)
+        result += "   " + letters + "\n\n"
+        for row in self.field:
+            result += str(row_cnt) + "  "
+            for elem in row:
+                result += elem.__str__() + " "
+            result += " " + str(row_cnt) + "\n"
+            row_cnt += 1
+        result += "\n   " + letters + "\n_______________________________"
+        return result
+
