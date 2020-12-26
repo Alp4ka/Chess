@@ -104,3 +104,56 @@ class PawnWhite(Unit):
 
     def __str__(self):
         return 'P'
+
+
+class Rook(Unit):
+    def __init__(self, field, x_pos, y_pos, fraction):
+        super().__init__(field, x_pos, y_pos, fraction)
+        self.moves = []
+        for i in range(-field.WIDTH+1, field.WIDTH, 1):
+            if i != 0:
+                self.moves.append([i, 0])
+                self.moves.append([0, i])
+
+    def __str__(self):
+        if self.fraction == Fraction.WHITE:
+            return 'R'
+        else:
+            return 'r'
+
+
+class Bishop(Unit):
+    def __init__(self, field, x_pos, y_pos, fraction):
+        super().__init__(field, x_pos, y_pos, fraction)
+        self.moves = []
+        for i in range(1, field.WIDTH, 1):
+            if i != 0:
+                self.moves.append([i, i])
+                self.moves.append([-i, i])
+                self.moves.append([i, -i])
+                self.moves.append([-i, -i])
+
+    def __str__(self):
+        if self.fraction == Fraction.WHITE:
+            return 'B'
+        else:
+            return 'b'
+
+
+class Knight(Unit):
+    def __init__(self, field, x_pos, y_pos, fraction):
+        super().__init__(field, x_pos, y_pos, fraction)
+        self.moves = [[-2, 1],
+                      [-2, -1],
+                      [-1, -2],
+                      [1, -2],
+                      [2, -1],
+                      [2, 1],
+                      [-1, 2],
+                      [1, 2]]
+
+    def __str__(self):
+        if self.fraction == Fraction.WHITE:
+            return 'N'
+        else:
+            return 'n'
