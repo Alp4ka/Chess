@@ -28,8 +28,7 @@ class Unit:
     def attack(self):
         pass
 
-#дописать
-    def step(self, x_pos, y_pos):
+    def move_or_attack(self, x_pos, y_pos):
         x_pos = convert_column_to_digit(x_pos)
         if [y_pos - self.y, x_pos - self.x] in self.moves:
             if not self.game_field.is_not_on_ally(x_pos, y_pos, self):
