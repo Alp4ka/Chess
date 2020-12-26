@@ -67,6 +67,15 @@ class Unit:
         else:
             raise ValueError("Недоступный ход.")
 
+    def show_paths(self):
+        pos = Point(self.x, self.y)
+        for move in self.moves:
+            pos_x = pos.x + move[1]
+            pos_y = pos.y + move[0]
+            if self.game_field.is_in_bounds(pos_x, pos_y):
+                if not self.is_blocked(pos_x, pos_y):
+                    if isinstance(self.game_field.field[pos_y][pos_x], Empty):
+                        self.game_field.field[pos_y][pos_x] = Path()
 
 class Empty:
     def copy(self):
@@ -75,6 +84,9 @@ class Empty:
     def __str__(self):
         return "."
 
+class Path(Empty):
+    def __str__(self):
+        return "*"
 
 class King(Unit):
     def __init__(self, field, x_pos, y_pos, fraction, is_alive=True):
@@ -211,7 +223,7 @@ class Knight(Unit):
     def copy(self):
         return Knight(self.game_field, self.x, self.y, self.fraction, self.is_alive)
 
-    def is_blocked(self, x, y):
+    def is_blocked(self, x_pos, _pos):
         return False
 
     def __str__(self):
