@@ -1,4 +1,6 @@
 WIDTH = 8
+DEBUG = True
+
 
 def convert_column_to_digit(column):
     alphabet = "abcdefgh"

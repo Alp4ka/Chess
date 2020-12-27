@@ -2,13 +2,21 @@ from GameField import *
 from Figure import *
 from Utils import convert_column_to_digit
 
+
+class Codes(Enum):
+    BACK = -1
+    EXIT = -2
+
 class Manager:
 
-    COMMANDS = ["exit", "move", "help", "back", "unit"]
+    COMMANDS = ["exit", "move", "help", "undo", "unit", "back"]
+
     def __init__(self):
-        self.game_field:GameField = GameField()
+        self.game_field: GameField = GameField()
+        self.game_field.current_step = 0
         self.game_field.save()
         self.game_over = False
+
     def print(self):
         print(self.game_field)
         print()
@@ -24,11 +32,12 @@ class Manager:
 
         if len(data) != 0:
             if data[0] == "exit":
-                return -1, -1
+                return Codes.EXIT, Codes.EXIT
+            if data[0] == "back":
+                return Codes.BACK, Codes.BACK
 
         column = row = 0
         while True:
-
             try:
                 column, row = data[0], data[1]
                 column = convert_column_to_digit(data[0])
@@ -38,37 +47,39 @@ class Manager:
                 print("Введена неправильная позиция, повторите ввод или введите <exit> для выхода")
                 data = input().split()
                 if data[0] == "exit":
-                    return -1, -1
+                    return Codes.EXIT, Codes.EXIT
 
     def turn(self):
         self.game_field.clean_empty()
-        self.save_game_state()
         self.game_field.current_step += 1
+        self.save_game_state()
         self.game_field.switch_turn()
 
     def choose_unit(self):
         self.game_field.clean_empty()
         column, row = self.get_position_with_context("Выберите фигуру")
 
-        if column == -1:
+        if column == Codes.EXIT:
             self.exit()
-            return False
+            return
+        if column == Codes.BACK:
+            return
 
         try:
             self.game_field.select_unit(column, row)
         except ValueError:
             print("На данной позиции нет фигуры")
-            return False
-        return True
+        return
 
     def move(self):
         while True:
             column, row = self.get_position_with_context("Введите позицию, куда переметить фигуру")
 
-            if column == -1:
+            if column == Codes.EXIT:
                 self.exit()
                 return False
-
+            if column == Codes.BACK:
+                return
             try:
                 self.game_field.selected.move_or_attack(column, row)
                 self.turn()
@@ -88,22 +99,28 @@ class Manager:
             else:
                 return data
 
+    def undo(self):
+        try:
+            self.game_field.undo()
+        except ValueError:
+            print("Невозможно вернуться назад, буфер пустой")
+
     def update(self):
         # Костыль на костыле
         while not self.game_over:
+            if DEBUG:
+                print("STEP IS: ", self.game_field.current_step)
             self.print()
             command = self.get_command()
 
             if command == "help":
                 self.help()
             elif command == "unit":
-                if not self.choose_unit():
-                    continue
+                self.choose_unit()
             elif command == "move":
-                if not self.move():
-                    continue
-            elif command == "back":
-                pass
+                self.move()
+            elif command == "undo":
+                self.undo()
             elif command == "exit":
                 self.exit()
                 break
