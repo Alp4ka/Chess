@@ -189,7 +189,8 @@ class GameField:
         self.memory_stack.append(MemorizedField(self))
 
     def undo(self):
-        print("UNDO")
+        if DEBUG:
+            print("UNDO")
         if len(self.memory_stack) > 0:
             previous = self.memory_stack.pop()
             if previous.current_step == self.current_step:

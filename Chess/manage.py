@@ -10,10 +10,13 @@ class Codes(Enum):
 class Manager:
 
     COMMANDS = ["exit", "move", "help", "undo", "unit", "back"]
+
     def __init__(self):
-        self.game_field:GameField = GameField()
+        self.game_field: GameField = GameField()
+        self.game_field.current_step = 0
         self.game_field.save()
         self.game_over = False
+
     def print(self):
         print(self.game_field)
         print()
@@ -48,8 +51,8 @@ class Manager:
 
     def turn(self):
         self.game_field.clean_empty()
-        self.save_game_state()
         self.game_field.current_step += 1
+        self.save_game_state()
         self.game_field.switch_turn()
 
     def choose_unit(self):
@@ -96,22 +99,28 @@ class Manager:
             else:
                 return data
 
+    def undo(self):
+        try:
+            self.game_field.undo()
+        except ValueError:
+            print("Невозможно вернуться назад, буфер пустой")
+
     def update(self):
         # Костыль на костыле
         while not self.game_over:
+            if DEBUG:
+                print("STEP IS: ", self.game_field.current_step)
             self.print()
             command = self.get_command()
 
             if command == "help":
                 self.help()
             elif command == "unit":
-                if not self.choose_unit():
-                    continue
+                self.choose_unit()
             elif command == "move":
-                if not self.move():
-                    continue
+                self.move()
             elif command == "undo":
-                pass
+                self.undo()
             elif command == "exit":
                 self.exit()
                 break
