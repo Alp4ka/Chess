@@ -217,12 +217,30 @@ class GameField:
             self.get_attackers(i.x, i.y)
 
     def is_checked(self, fraction):
+        """
+        Под шахом ли fraction.
+        """
         king = self.find_king(fraction)
         attackers = self.get_attackers(king.x, king.y)
         if attackers is None or len(attackers) == 0:
             return False
         else:
             return True
+
+    '''def is_mate(self, fraction):
+        king = self.find_king(fraction)
+        start_x = int(king.x)
+        start_y = int(king.y)
+        status = True
+        if self.is_checked(fraction):
+            for move in king.moves:
+                try:
+                    king.move(move[1]+start_x, move[0]+start_y)
+                    if self.is_checked(fraction):
+                except:
+                    continue
+        else:
+            return False'''
 
     def get_attackers(self, x_pos, y_pos):
         """
