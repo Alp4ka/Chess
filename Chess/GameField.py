@@ -159,7 +159,6 @@ class GameField:
                         t_list.append(self.field[r][c])
         return t_list
 
-
     def get_item(self, column, row):
         #column = convert_column_to_digit(column)
         return self.field[row][column]
@@ -177,6 +176,36 @@ class GameField:
             for c in range(self.WIDTH):
                 if isinstance(self.field[r][c], Figure.Path):
                     self.field[r][c] = Figure.Empty()
+
+    def check_all_in_danger(self, fraction=None):
+        if fraction is None:
+            for r in range(self.WIDTH):
+                for c in range(self.WIDTH):
+                    if isinstance(self.field[r][c], Figure.Unit):
+                        self.get_attackers(c, r)
+            return
+        for i in self.team_list(fraction):
+            self.get_attackers(i.x, i.y)
+
+
+    def get_attackers(self, x_pos, y_pos):
+        danger_f = list()
+        unit_on = self.field[y_pos][x_pos]
+        if not isinstance(unit_on, Figure.Unit):
+            return None
+        if unit_on.fraction == Figure.Fraction.WHITE:
+            enemy_team = self.team_list(Figure.Fraction.BLACK)
+        elif unit_on.fraction == Figure.Fraction.BLACK:
+            enemy_team = self.team_list(Figure.Fraction.WHITE)
+        else:
+            raise ValueError('wtf')
+        for i in range(len(enemy_team)):
+            if enemy_team[i].may_attack(x_pos, y_pos):
+                danger_f.append(enemy_team[i])
+        if len(danger_f) > 0:
+            print('Под угрозой {} от:'.format(unit_on.__str__())+ ' '.join([x.__str__() for x in danger_f]))
+        return danger_f
+
 
     def select_unit(self, column, row):
         choice = self.get_item(column, row)

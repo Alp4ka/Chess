@@ -63,6 +63,21 @@ class Unit:
         else:
             raise ValueError("Нельзя проходить через другие фигуры")
 
+    def may_attack(self, x_pos, y_pos):
+        if not isinstance(self, Pawn):
+            if [y_pos - self.y, x_pos - self.x] in self.moves and \
+                    not self.is_blocked(x_pos, y_pos):
+                return True
+            else:
+                return False
+        else:
+            if [y_pos - self.y, x_pos - self.x] in self.attack_moves and \
+                    not self.is_blocked(x_pos, y_pos):
+                return True
+            else:
+                return False
+
+
     def move_or_attack(self, x_pos, y_pos):
         x_pos = convert_column_to_digit(x_pos)
         if [y_pos - self.y, x_pos - self.x] in self.moves:

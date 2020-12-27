@@ -25,6 +25,7 @@ class Manager:
         #TODO: если выбрана башня, то можно выполнить эту команду и сделать рокировку
         pass
 
+
     def get_position_with_context(self, context):
         print(context)
 
@@ -124,6 +125,7 @@ class Manager:
             elif command == "exit":
                 self.exit()
                 break
+            self.game_field.check_all_in_danger(self.game_field.turn)
 
 
     def help(self):
