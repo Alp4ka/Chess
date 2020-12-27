@@ -115,11 +115,24 @@ class Manager:
         except IndexError:
             print("Невозможно вернуться назад, буфер пустой")
 
+    def check_mate(self):
+        for elem in self.game_field.eaten[Fraction.WHITE.value]:
+            if isinstance(elem, King):
+                print("ПОБЕДА БЕЛЫХ!")
+                self.game_over = True
+        for elem in self.game_field.eaten[Fraction.BLACK.value]:
+            if isinstance(elem, King):
+                print("ПОБЕДА ЧЕРНЫХ!")
+                self.game_over = True
+
     def update(self):
         # Костыль на костыле
         while not self.game_over:
             if DEBUG:
                 print("STEP IS: ", self.game_field.current_step)
+            self.check_mate()
+            if self.game_over:
+                break
             self.print()
             command = self.get_command()
 
