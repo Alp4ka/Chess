@@ -216,6 +216,14 @@ class GameField:
         for i in self.team_list(fraction):
             self.get_attackers(i.x, i.y)
 
+    def is_checked(self, fraction):
+        king = self.find_king(fraction)
+        attackers = self.get_attackers(king.x, king.y)
+        if attackers is None or len(attackers) == 0:
+            return False
+        else:
+            return True
+
     def get_attackers(self, x_pos, y_pos):
         """
         Список угроз для x_pos y_pos.
