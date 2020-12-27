@@ -13,9 +13,8 @@ class Manager:
 
     def __init__(self):
         self.game_field: GameField = GameField()
-        self.game_field.current_step = 0
-        self.game_field.save()
         self.game_over = False
+        # self.game_field.current_step = 0
 
     def print(self):
         print(self.game_field)
@@ -51,9 +50,9 @@ class Manager:
 
     def turn(self):
         self.game_field.clean_empty()
+        self.game_field.switch_turn()
         self.game_field.current_step += 1
         self.save_game_state()
-        self.game_field.switch_turn()
 
     def choose_unit(self):
         self.game_field.clean_empty()
@@ -102,7 +101,7 @@ class Manager:
     def undo(self):
         try:
             self.game_field.undo()
-        except ValueError:
+        except IndexError:
             print("Невозможно вернуться назад, буфер пустой")
 
     def update(self):

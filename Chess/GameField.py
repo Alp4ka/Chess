@@ -191,16 +191,29 @@ class GameField:
     def undo(self):
         if DEBUG:
             print("UNDO")
-        if len(self.memory_stack) > 0:
-            previous = self.memory_stack.pop()
-            if previous.current_step == self.current_step:
-                self.undo()
-                return
-            self.field = [[elem.copy() for elem in row] for row in previous.field]
-            self.turn = copy.copy(previous.turn)
-            self.current_step = copy.copy(previous.current_step)
+        last_copy = None
+        if len(self.memory_stack) > 1:
+            self.memory_stack.pop()
+            last_copy = self.memory_stack[len(self.memory_stack)-1]
+            self.field = [[elem.copy() for elem in row] for row in last_copy.field]
+            self.turn = copy.copy(last_copy.turn)
+            self.current_step = copy.copy(last_copy.current_step)
         else:
-            raise IndexError("Невозможно вернуться назад, буфер пустой")
+            last_copy = self.memory_stack[len(self.memory_stack)-1]
+
+        self.field = [[elem.copy() for elem in row] for row in last_copy.field]
+        self.turn = copy.copy(last_copy.turn)
+        self.current_step = copy.copy(last_copy.current_step)
+        # if len(self.memory_stack) > 0:
+        #     previous = self.memory_stack.pop()
+        #     if previous.current_step == self.current_step:
+        #         self.undo()
+        #         return
+        #     self.field = [[elem.copy() for elem in row] for row in previous.field]
+        #     self.turn = copy.copy(previous.turn)
+        #     self.current_step = copy.copy(previous.current_step)
+        # else:
+        #     raise IndexError("Невозможно вернуться назад, буфер пустой")
 
 
 class MemorizedField:
