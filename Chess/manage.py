@@ -9,7 +9,7 @@ class Codes(Enum):
 
 class Manager:
 
-    COMMANDS = ["exit", "move", "help", "undo", "unit", "back"]
+    COMMANDS = ["exit", "move", "help", "undo", "unit", "back", "castle"]
 
     def __init__(self):
         self.game_field: GameField = GameField()
@@ -22,7 +22,13 @@ class Manager:
 
     def castle(self):
         #TODO: если выбрана башня, то можно выполнить эту команду и сделать рокировку
-        pass
+        if isinstance(self.game_field.selected, Figure.Rook):
+            try:
+                self.game_field.selected.castle()
+            except ValueError:
+                print("Ладья не может провести рокировку с королём")
+        else:
+            print("Чтобы провести рокировку нужно выбрать ладью")
 
     def get_position_with_context(self, context):
         print(context)
@@ -122,6 +128,8 @@ class Manager:
                 self.choose_unit()
             elif command == "move":
                 self.move()
+            elif command == "castle":
+                self.castle()
             elif command == "undo":
                 self.undo()
             elif command == "exit":
