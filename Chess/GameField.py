@@ -140,7 +140,7 @@ class GameField:
         return result
 
     def get_item(self, column, row):
-        column = convert_column_to_digit(column)
+        #column = convert_column_to_digit(column)
         return self.field[row][column]
 
     def set_item(self, column, row, value):
