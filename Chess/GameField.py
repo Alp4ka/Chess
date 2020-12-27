@@ -141,7 +141,7 @@ class GameField:
         return result
 
     def get_item(self, column, row):
-        column = convert_column_to_digit(column)
+        #column = convert_column_to_digit(column)
         return self.field[row][column]
 
     def set_item(self, column, row, value):
@@ -184,11 +184,15 @@ class GameField:
         print("UNDO")
         if len(self.memory_stack) > 0:
             previous = self.memory_stack.pop()
+            if previous.current_step == self.current_step:
+                self.undo()
+                return
             self.field = [[elem.copy() for elem in row] for row in previous.field]
             self.turn = copy.copy(previous.turn)
             self.current_step = copy.copy(previous.current_step)
         else:
             raise IndexError("Невозможно вернуться назад, буфер пустой")
+
 
 class MemorizedField:
     def __init__(self, gamefield):
