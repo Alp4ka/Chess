@@ -134,7 +134,7 @@ class Manager:
 
     def exit(self):
         self.game_over = True
-        print("Game over bitch")
+        print("Game over!")
 
 
 def main():
