@@ -1,5 +1,5 @@
 WIDTH = 8
-DEBUG = True
+DEBUG = False
 
 
 def convert_column_to_digit(column):

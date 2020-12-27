@@ -14,14 +14,12 @@ class Manager:
     def __init__(self):
         self.game_field: GameField = GameField()
         self.game_over = False
-        # self.game_field.current_step = 0
 
     def print(self):
         print(self.game_field)
         print()
 
     def castle(self):
-        #TODO: если выбрана башня, то можно выполнить эту команду и сделать рокировку
         if isinstance(self.game_field.selected, Figure.Rook):
             try:
                 self.game_field.selected.castle()
@@ -32,7 +30,6 @@ class Manager:
 
     def get_position_with_context(self, context):
         print(context)
-        # data = input().split()
         data = input()
 
         if len(data) != 0:
@@ -41,7 +38,6 @@ class Manager:
             if data[0] == "back":
                 return Codes.BACK, Codes.BACK
 
-        column = row = 0
         while True:
             try:
                 column, row = data[0], data[1]
@@ -146,9 +142,7 @@ class Manager:
 
 
 def main():
-
     manager = Manager()
-
     manager.update()
 
 
