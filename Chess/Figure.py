@@ -31,11 +31,14 @@ class Unit:
         dest = Point(x_pos, y_pos)
 
         while not current.Equals(dest):
-            if isinstance(self.game_field.field[current.y][current.x], Unit) and \
-                    not isinstance(self.game_field.field[current.y][current.x], Empty):
-                return True
-            current.y += dir.y
-            current.x += dir.x
+            if self.game_field.is_in_bounds(current.x, current.y):
+                if isinstance(self.game_field.field[current.y][current.x], Unit) and \
+                        not isinstance(self.game_field.field[current.y][current.x], Empty):
+                    return True
+                current.y += dir.y
+                current.x += dir.x
+            else:
+                break
         return False
 
     def attack(self, x_pos, y_pos):
@@ -123,7 +126,7 @@ class Queen(Unit):
         else:
             return 'q'
 
-
+#TODO: override show_paths
 class PawnBlack(Unit):
     def __init__(self, field, x_pos, y_pos):
         super().__init__(field, x_pos, y_pos, Fraction.BLACK)
