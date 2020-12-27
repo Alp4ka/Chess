@@ -46,7 +46,7 @@ class Manager:
                 return column, row
             except:
                 print("Введена неправильная позиция, повторите ввод или введите <exit> для выхода")
-                data = input().split()
+                data = input()
                 if len(data) != 0:
                     if data[0] == "exit":
                         return Codes.EXIT, Codes.EXIT
@@ -118,11 +118,11 @@ class Manager:
     def check_mate(self):
         for elem in self.game_field.eaten[Fraction.WHITE.value]:
             if isinstance(elem, King):
-                print("ПОБЕДА БЕЛЫХ!")
+                print("!!! ПОБЕДА БЕЛЫХ !!!")
                 self.game_over = True
         for elem in self.game_field.eaten[Fraction.BLACK.value]:
             if isinstance(elem, King):
-                print("ПОБЕДА ЧЕРНЫХ!")
+                print("!!! ПОБЕДА ЧЕРНЫХ !!!")
                 self.game_over = True
 
     def update(self):
@@ -132,8 +132,8 @@ class Manager:
                 print("STEP IS: ", self.game_field.current_step)
             self.check_mate()
             if self.game_over:
+                self.print()
                 break
-            self.print()
             command = self.get_command()
 
             if command == "help":
@@ -158,7 +158,7 @@ class Manager:
                    "1) Перед собой ты видишь игровое поле, где '.' обозначает свободную ячейку.\n" \
                    "2) Сверху, слева, снизу, справа отображаются буквы и цифры для облегчения процесса\n" \
                    "ориентации на поле.\n" \
-                   "3) Буквы внутри квадрата поля обозначают фигуры. Большие буквы - фигуры белых, маленбкие - черных.\n" \
+                   "3) Буквы внутри квадрата поля обозначают фигуры. Большие буквы - фигуры белых, маленькие - черных.\n" \
                    "K - король, Q - королева, R - ладья, N - конь, B - слон, P - пешка\n" \
                    "\n" \
                    "Теперь подробнее про команды:\n" \

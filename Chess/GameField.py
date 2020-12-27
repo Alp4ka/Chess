@@ -251,9 +251,12 @@ class GameField:
         Под шахом ли fraction.
         """
         king = self.find_king(fraction)
-        attackers = self.get_attackers(king.x, king.y)
-        if attackers is None or len(attackers) == 0:
-            return False
+        if king is not None:
+            attackers = self.get_attackers(king.x, king.y)
+            if attackers is None or len(attackers) == 0:
+                return False
+            else:
+                return True
         else:
             return True
 
@@ -290,7 +293,18 @@ class GameField:
             if enemy_team[i].may_attack(x_pos, y_pos):
                 danger_f.append(enemy_team[i])
         if len(danger_f) > 0:
-            print('Под угрозой {} от: '.format(unit_on.__str__()) + ' '.join([x.__str__() for x in danger_f]))
+            check = False
+            for elem in self.eaten[Figure.Fraction.WHITE.value]:
+                if isinstance(elem, Figure.King):
+                    check = True
+                    break
+            if not check:
+                for elem in self.eaten[Figure.Fraction.BLACK.value]:
+                    if isinstance(elem, Figure.King):
+                        check = True
+                        break
+            if not check:
+                print('Под угрозой {} от: '.format(unit_on.__str__()) + ' '.join([x.__str__() for x in danger_f]))
         return danger_f
 
     def select_unit(self, column, row):
