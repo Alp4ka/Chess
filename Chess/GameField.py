@@ -23,11 +23,11 @@ class GameField:
         self.mate['white'] = False
         self.mate['black'] = False
 
-        '''
+
         self.eaten = dict()
         self.eaten['white'] = list()
         self.eaten['black'] = list()
-        '''
+
 
         self.selected = None
         self.turn = Figure.Fraction.WHITE
@@ -128,7 +128,8 @@ class GameField:
     def __str__(self):
         letters = "A B C D E F G H"
         row_cnt = 1
-        result = ""
+        result = "Съеденные {}: {}".format(Figure.Fraction.WHITE.value, ' '.join([x.__str__() for x in self.eaten[Figure.Fraction.WHITE.value]])) + "\n"
+        result += "Съеденные {}: {}".format(Figure.Fraction.BLACK.value, ' '.join([x.__str__() for x in self.eaten[Figure.Fraction.BLACK.value]])) + "\n"
         result += "   " + letters + "\n\n"
         for row in self.field:
             result += str(row_cnt) + "  "

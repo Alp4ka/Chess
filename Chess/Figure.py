@@ -75,9 +75,9 @@ class Unit:
             if self.game_field.is_in_bounds(pos_x, pos_y):
                 if not self.is_blocked(pos_x, pos_y):
                     if isinstance(self.game_field.field[pos_y][pos_x], King):
-                        if self.game_field.field[pos_y][pos_x].Fraction != self.Fraction:
-                            self.game_field.check[self.game_field.field[pos_y][pos_x].Fraction] = True
-                            print("ШАХ для {}".format(self.game_field.field[pos_y][pos_x].Fraction))
+                        if self.game_field.field[pos_y][pos_x].fraction != self.fraction:
+                            self.game_field.check[self.game_field.field[pos_y][pos_x].fraction] = True
+                            print("ШАХ для {}".format(self.game_field.field[pos_y][pos_x].fraction.value))
                     if isinstance(self.game_field.field[pos_y][pos_x], Empty):
                         self.game_field.field[pos_y][pos_x] = Path()
 
@@ -156,6 +156,7 @@ class Pawn(Unit):
         moves: list = copy.copy(self.moves)
         if self.first_step is True:
             moves.append(self.extra_moves[0])
+        moves.extend(self.attack_moves)
 
         for move in moves:
             pos_x = pos.x + move[1]
@@ -163,11 +164,12 @@ class Pawn(Unit):
             if self.game_field.is_in_bounds(pos_x, pos_y):
                 if not self.is_blocked(pos_x, pos_y):
                     if isinstance(self.game_field.field[pos_y][pos_x], King):
-                        if self.game_field.field[pos_y][pos_x].Fraction != self.Fraction:
-                            self.game_field.check[self.game_field.field[pos_y][pos_x].Fraction] = True
-                            print("ШАХ для {}".format(self.game_field.field[pos_y][pos_x].Fraction))
+                        if self.game_field.field[pos_y][pos_x].fraction != self.fraction and move in self.attack_moves:
+                            self.game_field.check[self.game_field.field[pos_y][pos_x].fraction] = True
+                            print("ШАХ для {}".format(self.game_field.field[pos_y][pos_x].fraction.value))
                     if isinstance(self.game_field.field[pos_y][pos_x], Empty):
-                        self.game_field.field[pos_y][pos_x] = Path()
+                        if move not in self.attack_moves:
+                            self.game_field.field[pos_y][pos_x] = Path()
 
 # доделать
     def move_or_attack(self, x_pos, y_pos):

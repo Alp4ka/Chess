@@ -6,23 +6,15 @@ split = "+---------------+"
 def main():
     gamefield = GameField()
     print(gamefield)
-    print()
-
-    gamefield.select_unit('a', 1)
+    gamefield.set_item(row=6, column='d', value=Queen(field=gamefield,
+                                                               x_pos=3,
+                                                               y_pos=6,
+                                                              fraction = Fraction.WHITE,
+                                                             is_alive = True))
+    gamefield.select_unit('d', 6)
+    gamefield.selected.move_or_attack('d', 7)
     print(gamefield)
-    print()
 
-    gamefield.selected.move_or_attack('a', 2)
-    gamefield.save()
-
-    print(gamefield)
-    print()
-
-    gamefield.select_unit('a', 2)
-    print(gamefield)
-    print()
-    gamefield.selected.move_or_attack('a', 3)
-    gamefield.save()
 
 
 main()
