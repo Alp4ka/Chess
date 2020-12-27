@@ -26,6 +26,7 @@ def signum(x: int):
     return 0
 
 
+
 class Point:
     def __init__(self, x, y):
         self.x = x
