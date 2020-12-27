@@ -40,8 +40,10 @@ class Unit:
             self.game_field.field[self.y][self.x] = Empty()
             self.x = x_pos
             self.y = y_pos
+            self.game_field.eaten[self.game_field.field[y_pos][x_pos].fraction.value].append(self.game_field.field[y_pos][x_pos].copy())
             self.game_field.field[y_pos][x_pos] = self
             print("Attacked and killed motherfucker")
+
         else:
             raise ValueError("Нельзя проходить через другие фигуры")
 
