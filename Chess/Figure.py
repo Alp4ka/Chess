@@ -47,6 +47,12 @@ class Unit:
         else:
             raise ValueError("Нельзя проходить через другие фигуры")
 
+    def strict_move(self, x_pos, y_pos):
+        self.game_field.field[self.y][self.x] = Empty()
+        self.x = x_pos
+        self.y = y_pos
+        self.game_field.field[y_pos][x_pos] = self
+
     def move(self, x_pos, y_pos):
         if not self.is_blocked(x_pos, y_pos):
             self.game_field.field[self.y][self.x] = Empty()
@@ -66,6 +72,8 @@ class Unit:
                 self.attack(x_pos, y_pos)
             else:
                 raise ValueError("Недоступный ход.")
+            if isinstance(self, King) or isinstance(self, Rook):
+                self.moved_once = True
         else:
             raise ValueError("Недоступный ход.")
 
@@ -108,6 +116,7 @@ class King(Unit):
                       [1, -1],
                       [1, 0],
                       [1, 1]]
+        self.moved_once = False
 
     def copy(self):
         return King(self.game_field, self.x, self.y, self.fraction, self.is_alive)
@@ -236,11 +245,29 @@ class PawnWhite(Pawn):
 class Rook(Unit):
     def __init__(self, field, x_pos, y_pos, fraction, is_alive=True):
         super().__init__(field, x_pos, y_pos, fraction, is_alive)
+        self.moved_once = False
         self.moves = []
         for i in range(-field.WIDTH + 1, field.WIDTH, 1):
             if i != 0:
                 self.moves.append([i, 0])
                 self.moves.append([0, i])
+
+    def castle(self):
+        my_king = self.game_field.find_king(self.fraction)
+        if not self.moved_once and not my_king.moved_once:
+            rook_x_pos = my_king.x + signum(self.x - my_king.x)
+            rook_y_pos = self.y
+            king_x_pos = my_king.x + 2*signum(self.x - my_king.x)
+            king_y_pos = my_king.y
+            if not self.is_blocked(x_pos=rook_x_pos, y_pos=rook_y_pos):
+                self.strict_move(x_pos=rook_x_pos, y_pos=rook_y_pos)
+                my_king.strict_move(x_pos=king_x_pos, y_pos=king_y_pos)
+            else:
+                raise ValueError("Проход к королю закрыт")
+        else:
+            raise ValueError("Фигуры уже двигались")
+
+
 
     def copy(self):
         return Rook(self.game_field, self.x, self.y, self.fraction, self.is_alive)
