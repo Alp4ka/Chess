@@ -13,9 +13,8 @@ class Manager:
 
     def __init__(self):
         self.game_field: GameField = GameField()
-        self.game_field.current_step = 0
-        self.game_field.save()
         self.game_over = False
+        # self.game_field.current_step = 0
 
     def print(self):
         print(self.game_field)
@@ -27,8 +26,8 @@ class Manager:
 
     def get_position_with_context(self, context):
         print(context)
-
-        data = input().split()
+        # data = input().split()
+        data = input()
 
         if len(data) != 0:
             if data[0] == "exit":
@@ -51,9 +50,10 @@ class Manager:
 
     def turn(self):
         self.game_field.clean_empty()
+        self.game_field.switch_turn()
         self.game_field.current_step += 1
         self.save_game_state()
-        self.game_field.switch_turn()
+        self.game_field.selected = None
 
     def choose_unit(self):
         self.game_field.clean_empty()
@@ -73,7 +73,7 @@ class Manager:
 
     def move(self):
         while True:
-            column, row = self.get_position_with_context("Введите позицию, куда переметить фигуру")
+            column, row = self.get_position_with_context("Введите позицию, куда переместить фигуру")
 
             if column == Codes.EXIT:
                 self.exit()
@@ -86,6 +86,8 @@ class Manager:
                 return True
             except ValueError:
                 print("Данный ход недоступен, введите другую позицию или введите <exit> для выхода")
+            except AttributeError:
+                print("Для начала выберите фигуру")
 
     def save_game_state(self):
         self.game_field.save()
@@ -102,7 +104,8 @@ class Manager:
     def undo(self):
         try:
             self.game_field.undo()
-        except ValueError:
+        # Теоритически, эта штука теперь никогда не случится, но на всякий случай пусть пока будет
+        except IndexError:
             print("Невозможно вернуться назад, буфер пустой")
 
     def update(self):
@@ -126,7 +129,6 @@ class Manager:
                 break
             self.game_field.check_all_in_danger(self.game_field.turn)
 
-
     def help(self):
         raise NotImplementedError()
 
@@ -134,44 +136,12 @@ class Manager:
         self.game_over = True
         print("Game over bitch")
 
+
 def main():
 
     manager = Manager()
 
     manager.update()
-    #gamefield = GameField()
-    # print(gamefield)
-    # print()
-    #
-    # gamefield.select_unit('a', 1)
-    # print(gamefield)
-    # print()
-    #
-    # gamefield.selected.move_or_attack('a', 2)
-    # gamefield.current_step += 1
-    # gamefield.save()
-    #
-    #
-    # print(gamefield)
-    # print()
-    #
-    # gamefield.select_unit('a', 2)
-    # print(gamefield)
-    # print()
-    # gamefield.selected.move_or_attack('a', 3)
-    # gamefield.current_step += 1
-    # gamefield.save()
-    #
-    # gamefield.select_unit('b', 1)
-    # gamefield.undo()
-    # print(gamefield)
-    # print()
-    #
-    # gamefield.undo()
-    # print(gamefield)
-    # print()
-    #
-    # gamefield.select_unit('b', 1)
-    # print(gamefield)
-    # print()
+
+
 main()
