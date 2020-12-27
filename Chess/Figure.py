@@ -227,7 +227,6 @@ class Pawn(Unit):
                         if move not in self.attack_moves:
                             self.game_field.field[pos_y][pos_x] = Path()
 
-# доделать
     def move_or_attack(self, x_pos, y_pos):
         """
         Переопределение Unit.move_or_attack().
@@ -255,7 +254,6 @@ class Pawn(Unit):
                 raise ValueError("Недоступный ход.")
         else:
             raise ValueError("Недоступный ход.")
-
 
 
 class PawnBlack(Pawn):

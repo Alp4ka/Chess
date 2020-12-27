@@ -7,8 +7,8 @@ class Codes(Enum):
     BACK = -1
     EXIT = -2
 
-class Manager:
 
+class Manager:
     COMMANDS = ["exit", "move", "help", "undo", "unit", "back", "castle"]
 
     def __init__(self):
