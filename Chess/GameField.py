@@ -31,9 +31,10 @@ class GameField:
 
         self.selected = None
         self.turn = Figure.Fraction.WHITE
-        self.memory = list()
+        self.memory_stack = list()
         self.current_step = 0
-        #self.game_field[0][0] =
+
+        self.save()
 
     def init_units(self):
         self.set_item(row=0, column='e', value=Figure.King(field=self,
@@ -158,14 +159,14 @@ class GameField:
 
     def select_unit(self, column, row):
         choice = self.get_item(column, row)
-        if isinstance(choice, Figure.Unit):
+        if isinstance(choice, Figure.Unit) and not isinstance(choice, Figure.Empty):
             if choice.fraction != self.turn:
                 raise ValueError('На {} {} нет доступной фигуры'.format(column, row))
             self.selected = choice
         else:
             raise ValueError('На {} {} нет доступной фигуры'.format(column, row))
 
-        self.clean_empty()
+        #self.clean_empty()
 
         choice.show_paths()
 
@@ -175,6 +176,18 @@ class GameField:
         else:
             self.turn = Figure.Fraction.WHITE
 
+    def save(self):
+        self.memory_stack.append(MemorizedField(self))
+
+    def undo(self):
+        print("UNDO")
+        if len(self.memory_stack) > 0:
+            previous = self.memory_stack.pop()
+            self.field = [[elem.copy() for elem in row] for row in previous.field]
+            self.turn = copy.copy(previous.turn)
+            self.current_step = copy.copy(previous.current_step)
+        else:
+            raise IndexError("Невозможно вернуться назад, буфер пустой")
 
 class MemorizedField:
     def __init__(self, gamefield):
