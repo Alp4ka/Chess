@@ -39,19 +39,19 @@ class GameField:
 
     def init_units(self):
         self.set_item(row=0, column='e', value=Figure.King(field=self,
-                                                           x_pos=5,
+                                                           x_pos=4,
                                                            y_pos=0,
                                                            fraction=Figure.Fraction.WHITE))
         self.set_item(row=0, column='d', value=Figure.Queen(field=self,
-                                                            x_pos=4,
+                                                            x_pos=3,
                                                             y_pos=0,
                                                             fraction=Figure.Fraction.WHITE))
         self.set_item(row=7, column='d', value=Figure.King(field=self,
-                                                           x_pos=4,
+                                                           x_pos=3,
                                                            y_pos=7,
                                                            fraction=Figure.Fraction.BLACK))
         self.set_item(row=7, column='e', value=Figure.Queen(field=self,
-                                                            x_pos=5,
+                                                            x_pos=4,
                                                             y_pos=7,
                                                             fraction=Figure.Fraction.BLACK))
         for column in range(self.WIDTH):
@@ -125,6 +125,13 @@ class GameField:
                 self.field[y][x].fraction != unit.fraction:
             return True
         return False
+
+    def find_king(self, fraction):
+        for row in range(self.WIDTH):
+            for elem in range(self.WIDTH):
+                if isinstance(self.get_item(elem, row), Figure.King):
+                    if self.get_item(elem, row).fraction == fraction:
+                        return self.get_item(elem, row)
 
     def __str__(self):
         letters = "A B C D E F G H"
