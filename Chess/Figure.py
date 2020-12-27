@@ -50,6 +50,7 @@ class Unit:
             self.game_field.field[self.y][self.x] = Empty()
             self.x = x_pos
             self.y = y_pos
+
             self.game_field.field[y_pos][x_pos] = self
         else:
             raise ValueError("Нельзя проходить через другие фигуры")
@@ -147,7 +148,27 @@ class Pawn(Unit):
         self.moves = None
         self.attack_moves = None
         self.first_step = True
-        
+        self.extra_moves = None
+
+
+    def show_paths(self):
+        pos = Point(self.x, self.y)
+        moves: list = copy.copy(self.moves)
+        if self.first_step is True:
+            moves.append(self.extra_moves[0])
+
+        for move in moves:
+            pos_x = pos.x + move[1]
+            pos_y = pos.y + move[0]
+            if self.game_field.is_in_bounds(pos_x, pos_y):
+                if not self.is_blocked(pos_x, pos_y):
+                    if isinstance(self.game_field.field[pos_y][pos_x], King):
+                        if self.game_field.field[pos_y][pos_x].Fraction != self.Fraction:
+                            self.game_field.check[self.game_field.field[pos_y][pos_x].Fraction] = True
+                            print("ШАХ для {}".format(self.game_field.field[pos_y][pos_x].Fraction))
+                    if isinstance(self.game_field.field[pos_y][pos_x], Empty):
+                        self.game_field.field[pos_y][pos_x] = Path()
+
 # доделать
     def move_or_attack(self, x_pos, y_pos):
         x_pos = convert_column_to_digit(x_pos)
@@ -159,7 +180,7 @@ class Pawn(Unit):
                 self.move(x_pos, y_pos)
             else:
                 raise ValueError("Недоступный ход.")
-            self.first_step = False;
+            self.first_step = False
         elif not self.first_step and [y_pos - self.y, x_pos - self.x] in self.moves:
             if self.game_field.is_on_empty(x_pos, y_pos):
                 self.move(x_pos, y_pos)
@@ -168,7 +189,7 @@ class Pawn(Unit):
         elif [y_pos - self.y, x_pos - self.x] in self.attack_moves:
             if self.game_field.is_on_enemy(x_pos, y_pos, self):
                 self.attack(x_pos, y_pos)
-                self.first_step = False;
+                self.first_step = False
             else:
                 raise ValueError("Недоступный ход.")
         else:
@@ -180,7 +201,7 @@ class PawnBlack(Pawn):
     def __init__(self, field, x_pos, y_pos, fraction = Fraction.BLACK, is_alive=True):
         super().__init__(field, x_pos, y_pos, fraction, is_alive)
         self.moves = [[-1, 0]]
-        self.exra_moves = [[-2, 0]]
+        self.extra_moves = [[-2, 0]]
         self.attack_moves = [[-1, 1], [-1, -1]]
 
     def copy(self):
