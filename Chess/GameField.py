@@ -59,11 +59,12 @@ class GameField:
                                                             y_pos=7,
                                                             fraction=Figure.Fraction.BLACK))
         for column in range(self.WIDTH):
-            self.set_item(row=6, column=column, value=Figure.PawnBlack(field=self,
+                self.set_item(row=6, column=column, value=Figure.PawnBlack(field=self,
                                                                        x_pos=column,
                                                                        y_pos=6))
         for column in range(self.WIDTH):
-            self.set_item(row=1, column=column, value=Figure.PawnWhite(field=self,
+            if column != 3:
+                self.set_item(row=1, column=column, value=Figure.PawnWhite(field=self,
                                                                        x_pos=column,
                                                                        y_pos=1))
         self.set_item(row=7, column='a', value=Figure.Rook(field=self,
@@ -348,15 +349,14 @@ class GameField:
         if len(self.memory_stack) > 1:
             self.memory_stack.pop()
             last_copy = self.memory_stack[len(self.memory_stack)-1]
-            self.field = [[elem.copy() for elem in row] for row in last_copy.field]
-            self.turn = copy.copy(last_copy.turn)
-            self.current_step = copy.copy(last_copy.current_step)
         else:
             last_copy = self.memory_stack[len(self.memory_stack)-1]
 
         self.field = [[elem.copy() for elem in row] for row in last_copy.field]
         self.turn = copy.copy(last_copy.turn)
         self.current_step = copy.copy(last_copy.current_step)
+        self.eaten['white'] = [x.copy() for x in last_copy.eaten['white']]
+        self.eaten['black'] = [x.copy() for x in last_copy.eaten['black']]
         # if len(self.memory_stack) > 0:
         #     previous = self.memory_stack.pop()
         #     if previous.current_step == self.current_step:
@@ -371,9 +371,12 @@ class GameField:
 
 class MemorizedField:
     def __init__(self, gamefield):
+        self.eaten = dict()
         self.field = [[elem.copy() for elem in row] for row in gamefield.field]
         self.turn = copy.copy(gamefield.turn)
         self.current_step = copy.copy(gamefield.current_step)
+        self.eaten['white'] = [x.copy() for x in gamefield.eaten['white']]
+        self.eaten['black'] = [x.copy() for x in gamefield.eaten['black']]
 
     def __str__(self):
         letters = "A B C D E F G H"

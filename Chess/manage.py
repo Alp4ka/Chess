@@ -33,9 +33,9 @@ class Manager:
         data = input()
 
         if len(data) != 0:
-            if data[0] == "exit":
+            if data == "exit":
                 return Codes.EXIT, Codes.EXIT
-            if data[0] == "back":
+            if data == "back":
                 return Codes.BACK, Codes.BACK
 
         while True:
@@ -48,9 +48,9 @@ class Manager:
                 print("Введена неправильная позиция, повторите ввод или введите <exit> для выхода")
                 data = input()
                 if len(data) != 0:
-                    if data[0] == "exit":
+                    if data == "exit":
                         return Codes.EXIT, Codes.EXIT
-                    if data[0] == "back":
+                    if data == "back":
                         return Codes.BACK, Codes.BACK
 
     def turn(self):
@@ -134,6 +134,7 @@ class Manager:
             if self.game_over:
                 self.print()
                 break
+            self.print()
             command = self.get_command()
 
             if command == "help":
@@ -165,7 +166,9 @@ class Manager:
                    "1) unit - выбирает фигуру.\n" \
                    "2) move - двигает фигуру, которую выделили командой unit.\n" \
                    "3) undo - возвращает на ход назад.\n" \
-                   "4) castle - Проводит рокировку короля с выбранной unit'ом ладьей.\n" \
+                   "4) castle - Проводит рокировку короля с выбранной unit'ом ладьей.\т" \
+                   "5) back - выйти из move.\n" \
+                   "6) exit - закончить игру.\n" \
                    "\n" \
                    "Пример последовательности команд:\n" \
                    "unit\n" \
@@ -176,7 +179,8 @@ class Manager:
                    "a8\n" \
                    "castle\n" \
                    "undo\n" \
-                   "\n" \
+                   "move\n" \
+                   "back\n\n" \
                    "Удачи на поле битвы!\n"
         print(to_print)
 
