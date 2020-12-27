@@ -134,9 +134,11 @@ class GameField:
                         return self.get_item(elem, row)
 
     def __str__(self):
+        separator = "+-------------------+"
         letters = "A B C D E F G H"
         row_cnt = 1
-        result = "Съеденные {}: {}".format(Figure.Fraction.WHITE.value, ' '.join([x.__str__() for x in self.eaten[Figure.Fraction.WHITE.value]])) + "\n"
+        result = "Ход #{}: {}\n".format(self.current_step, self.turn.value)
+        result += "Съеденные {}: {}".format(Figure.Fraction.WHITE.value, ' '.join([x.__str__() for x in self.eaten[Figure.Fraction.WHITE.value]])) + "\n"
         result += "Съеденные {}: {}".format(Figure.Fraction.BLACK.value, ' '.join([x.__str__() for x in self.eaten[Figure.Fraction.BLACK.value]])) + "\n"
         result += "   " + letters + "\n\n"
         for row in self.field:
@@ -145,8 +147,18 @@ class GameField:
                 result += elem.__str__() + " "
             result += " " + str(row_cnt) + "\n"
             row_cnt += 1
-        result += "\n   " + letters
+        result += "\n   " + letters + "\n" + separator
         return result
+
+    def team_list(self, fraction):
+        t_list = list()
+        for r in range(self.WIDTH):
+            for c in range(self.WIDTH):
+                if isinstance(self.field[r][c], Figure.Unit):
+                    if self.field[r][c].fraction == fraction:
+                        t_list.append(self.field[r][c])
+        return t_list
+
 
     def get_item(self, column, row):
         #column = convert_column_to_digit(column)
