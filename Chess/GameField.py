@@ -38,6 +38,9 @@ class GameField:
         self.save()
 
     def init_units(self):
+        """
+        Инициализация фигурок.
+        """
         self.set_item(row=0, column='e', value=Figure.King(field=self,
                                                            x_pos=4,
                                                            y_pos=0,
@@ -112,21 +115,32 @@ class GameField:
                                                              fraction=Figure.Fraction.WHITE))
 
     def is_in_bounds(self, x, y):
+        """
+        Проверка, находится ли x y в грацницах поля.
+        """
         if 0 <= x < self.WIDTH and 0 <= y < self.WIDTH:
             return True
         return False
 
     def is_on_empty(self, x, y):
-
+        """
+        Првоерка, на пустом ли поле.
+        """
         return isinstance(self.field[y][x], Figure.Empty)
 
     def is_on_enemy(self, x, y, unit):
+        """
+        Является ли поле x,y вргом.
+        """
         if isinstance(self.field[y][x], Figure.Unit) and not isinstance(self.field[y][x], Figure.Empty) and \
                 self.field[y][x].fraction != unit.fraction:
             return True
         return False
 
     def find_king(self, fraction):
+        """
+        Вернуть instance King с King.fraction = fraction.
+        """
         for row in range(self.WIDTH):
             for elem in range(self.WIDTH):
                 if isinstance(self.get_item(elem, row), Figure.King):
@@ -151,6 +165,9 @@ class GameField:
         return result
 
     def team_list(self, fraction):
+        """
+        Вернуть весь спитсок фигур на поле с Unit.fraction = fraction.
+        """
         t_list = list()
         for r in range(self.WIDTH):
             for c in range(self.WIDTH):
@@ -160,10 +177,16 @@ class GameField:
         return t_list
 
     def get_item(self, column, row):
+        """
+        Получить Instance на column row
+        """
         #column = convert_column_to_digit(column)
         return self.field[row][column]
 
     def set_item(self, column, row, value):
+        """
+        Задать значение value в ячейке на column row.
+        """
         column = convert_column_to_digit(column)
 
         if type(row) != int or row >= self.WIDTH or row < 0:
@@ -172,12 +195,18 @@ class GameField:
         self.field[row][column] = value
 
     def clean_empty(self):
+        """
+        Очистить пустые клетки.
+        """
         for r in range(self.WIDTH):
             for c in range(self.WIDTH):
                 if isinstance(self.field[r][c], Figure.Path):
                     self.field[r][c] = Figure.Empty()
 
     def check_all_in_danger(self, fraction=None):
+        """
+        Проверить все фигуры Unit.fraction = fraction на налчие опасности.
+        """
         if fraction is None:
             for r in range(self.WIDTH):
                 for c in range(self.WIDTH):
@@ -187,8 +216,10 @@ class GameField:
         for i in self.team_list(fraction):
             self.get_attackers(i.x, i.y)
 
-
     def get_attackers(self, x_pos, y_pos):
+        """
+        Список угроз для x_pos y_pos.
+        """
         danger_f = list()
         unit_on = self.field[y_pos][x_pos]
         if not isinstance(unit_on, Figure.Unit):
@@ -206,8 +237,10 @@ class GameField:
             print('Под угрозой {} от:'.format(unit_on.__str__())+ ' '.join([x.__str__() for x in danger_f]))
         return danger_f
 
-
     def select_unit(self, column, row):
+        """
+        Выбрать юнита.
+        """
         choice = self.get_item(column, row)
         if isinstance(choice, Figure.Unit) and not isinstance(choice, Figure.Empty):
             if choice.fraction != self.turn:
@@ -221,15 +254,24 @@ class GameField:
         choice.show_paths()
 
     def switch_turn(self):
+        """
+        Сменить действующую сторону.
+        """
         if self.turn == Figure.Fraction.WHITE:
             self.turn = Figure.Fraction.BLACK
         else:
             self.turn = Figure.Fraction.WHITE
 
     def save(self):
+        """
+        Засейвить ход в стэк.
+        """
         self.memory_stack.append(MemorizedField(self))
 
     def undo(self):
+        """
+        Вернуть предыдущий ход.
+        """
         if DEBUG:
             print("UNDO")
         if len(self.memory_stack) > 0:

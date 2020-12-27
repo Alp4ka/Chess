@@ -19,6 +19,9 @@ class Unit:
         self.is_alive = is_alive
 
     def is_blocked(self, x_pos, y_pos):
+        """
+        Проверка, мешает ли self что-либо для того, чтобы достигнуть цель на x_pos, y_pos.
+        """
         dir = Point(signum(x_pos - self.x), signum(y_pos - self.y))
         current = Point(self.x + dir.x, self.y + dir.y)
         dest = Point(x_pos, y_pos)
@@ -35,6 +38,9 @@ class Unit:
         return False
 
     def attack(self, x_pos, y_pos):
+        """
+        Атака, направленная на x_pos y_pos.
+        """
         if not self.is_blocked(x_pos, y_pos):
             self.game_field.field[y_pos][x_pos].is_alive = False
             self.game_field.field[self.y][self.x] = Empty()
@@ -48,12 +54,18 @@ class Unit:
             raise ValueError("Нельзя проходить через другие фигуры")
 
     def strict_move(self, x_pos, y_pos):
+        """
+        Направить фигуру на x_pos y_pos без проверки на достижимость клетки.
+        """
         self.game_field.field[self.y][self.x] = Empty()
         self.x = x_pos
         self.y = y_pos
         self.game_field.field[y_pos][x_pos] = self
 
     def move(self, x_pos, y_pos):
+        """
+        Перудвинуть фигуру на x_pos y_pos.
+        """
         if not self.is_blocked(x_pos, y_pos):
             self.game_field.field[self.y][self.x] = Empty()
             self.x = x_pos
@@ -64,6 +76,9 @@ class Unit:
             raise ValueError("Нельзя проходить через другие фигуры")
 
     def may_attack(self, x_pos, y_pos):
+        """
+        Проверка на возможност атаки на клетку x_pos y_pos.
+        """
         if not isinstance(self, Pawn):
             if [y_pos - self.y, x_pos - self.x] in self.moves and \
                     not self.is_blocked(x_pos, y_pos):
@@ -77,8 +92,10 @@ class Unit:
             else:
                 return False
 
-
     def move_or_attack(self, x_pos, y_pos):
+        """
+        Универсальный метод, определяющий действие выбранного юнита.
+        """
         x_pos = convert_column_to_digit(x_pos)
         if [y_pos - self.y, x_pos - self.x] in self.moves:
             if self.game_field.is_on_empty(x_pos, y_pos):
@@ -93,6 +110,9 @@ class Unit:
             raise ValueError("Недоступный ход.")
 
     def show_paths(self):
+        """
+        Отображение возможных ходов.
+        """
         pos = Point(self.x, self.y)
         for move in self.moves:
             pos_x = pos.x + move[1]
@@ -108,6 +128,9 @@ class Unit:
 
 
 class Empty:
+    """
+    Возврат копии Empty instance.
+    """
     def copy(self):
         return Empty()
 
@@ -134,6 +157,9 @@ class King(Unit):
         self.moved_once = False
 
     def copy(self):
+        """
+        Возврат копии King instance.
+        """
         return King(self.game_field, self.x, self.y, self.fraction, self.is_alive)
 
     def __str__(self):
@@ -159,6 +185,9 @@ class Queen(Unit):
                 self.moves.append([0, i])
 
     def copy(self):
+        """
+        Возврат копии Queen instance.
+        """
         return Queen(self.game_field, self.x, self.y, self.fraction, self.is_alive)
 
     def __str__(self):
@@ -176,8 +205,10 @@ class Pawn(Unit):
         self.first_step = True
         self.extra_moves = None
 
-
     def show_paths(self):
+        """
+        Переопределение Unit.show_paths.
+        """
         pos = Point(self.x, self.y)
         moves: list = copy.copy(self.moves)
         if self.first_step is True:
@@ -199,6 +230,9 @@ class Pawn(Unit):
 
 # доделать
     def move_or_attack(self, x_pos, y_pos):
+        """
+        Переопределение Unit.move_or_attack().
+        """
         x_pos = convert_column_to_digit(x_pos)
         if not self.game_field.is_in_bounds(x_pos, y_pos):
             raise ValueError("Недоступный ход.")
@@ -233,6 +267,9 @@ class PawnBlack(Pawn):
         self.attack_moves = [[-1, 1], [-1, -1]]
 
     def copy(self):
+        """
+        Возврат копии PawnBlack instance.
+        """
         temp_pawn = PawnBlack(self.game_field, self.x, self.y, self.fraction, self.is_alive)
         temp_pawn.first_step = self.first_step
         return temp_pawn
@@ -249,6 +286,9 @@ class PawnWhite(Pawn):
         self.attack_moves = [[1, 1], [1, -1]]
 
     def copy(self):
+        """
+        Возврат копии PawnWhite instance.
+        """
         temp_pawn = PawnWhite(self.game_field, self.x, self.y, self.fraction, self.is_alive)
         temp_pawn.first_step = self.first_step
         return temp_pawn
@@ -268,6 +308,9 @@ class Rook(Unit):
                 self.moves.append([0, i])
 
     def castle(self):
+        """
+        Выполнение рокирвки
+        """
         my_king = self.game_field.find_king(self.fraction)
         if not self.moved_once and not my_king.moved_once:
             rook_x_pos = my_king.x + signum(self.x - my_king.x)
@@ -282,9 +325,10 @@ class Rook(Unit):
         else:
             raise ValueError("Фигуры уже двигались")
 
-
-
     def copy(self):
+        """
+        Возврат копии Rook instance.
+        """
         return Rook(self.game_field, self.x, self.y, self.fraction, self.is_alive)
 
     def __str__(self):
@@ -306,6 +350,9 @@ class Bishop(Unit):
                 self.moves.append([-i, -i])
 
     def copy(self):
+        """
+        Возврат копии Bishop instance.
+        """
         return Bishop(self.game_field, self.x, self.y, self.fraction, self.is_alive)
 
     def __str__(self):
@@ -328,6 +375,9 @@ class Knight(Unit):
                       [1, 2]]
 
     def copy(self):
+        """
+        Возврат копии Knight instance.
+        """
         return Knight(self.game_field, self.x, self.y, self.fraction, self.is_alive)
 
     def is_blocked(self, x_pos, _pos):

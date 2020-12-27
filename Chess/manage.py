@@ -25,7 +25,6 @@ class Manager:
         #TODO: если выбрана башня, то можно выполнить эту команду и сделать рокировку
         pass
 
-
     def get_position_with_context(self, context):
         print(context)
 
