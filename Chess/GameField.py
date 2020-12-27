@@ -63,7 +63,6 @@ class GameField:
                                                                        x_pos=column,
                                                                        y_pos=6))
         for column in range(self.WIDTH):
-            if column != 3:
                 self.set_item(row=1, column=column, value=Figure.PawnWhite(field=self,
                                                                        x_pos=column,
                                                                        y_pos=1))
