@@ -167,8 +167,6 @@ class Manager:
                    "Удачи на поле битвы!\n"
         print(to_print)
 
-
-
     def exit(self):
         self.game_over = True
         print("Game over!")
