@@ -6,7 +6,9 @@ from Utils import *
 class GameField:
     WIDTH = 8
     alphabet = "abcdefgh"
+    separator = "+----------------------------+"
 
+    translate = { 'white': 'белые', 'black': 'чёрные'}
     def __init__(self):
         self.field = [[Figure.Empty()] * self.WIDTH for x in range(self.WIDTH)]
         self.init_units()
@@ -29,7 +31,6 @@ class GameField:
         self.eaten['black'] = list()
 
 
-        #TODO: check for empty selected for move command
         self.selected = None
         self.turn = Figure.Fraction.WHITE
         self.memory_stack = list()
@@ -147,25 +148,50 @@ class GameField:
                     if self.get_item(elem, row).fraction == fraction:
                         return self.get_item(elem, row)
 
+    def generate_separator(self, n):
+        ret = "+"
+        for i in range(n-1):
+            ret += "-"
+        return ret + "+\n"
+
+    def step_info(self):
+        data = "|  Ход #{}: {}    |\n".format(self.current_step + 1, self.translate[self.turn.value])
+        sep = self.generate_separator(len(data)-2)
+        ret = sep
+        ret += data
+        ret += sep
+        return ret
+
+    def eaten_info(self, fraction):
+        data = "| Съеденные {}: {}   |".format(self.translate[fraction.value], ' '.join([x.__str__() for x in self.eaten[fraction.value]])) + "\n"
+        sep = self.generate_separator(len(data)-2)
+        ret = sep
+        ret += data
+        ret += sep
+        return ret
+
     def __str__(self):
-        separator = "+-------------------+"
-        letters = "A B C D E F G H"
+        letters = " A B C D E F G H"
         row_cnt = 1
-        result = "Ход #{}: {}\n".format(self.current_step, self.turn.value)
-        result += "Съеденные {}: {}".format(Figure.Fraction.WHITE.value, ' '.join([x.__str__() for x in self.eaten[Figure.Fraction.WHITE.value]])) + "\n"
-        result += "Съеденные {}: {}".format(Figure.Fraction.BLACK.value, ' '.join([x.__str__() for x in self.eaten[Figure.Fraction.BLACK.value]])) + "\n"
-        result += "   " + letters + "\n\n"
+        result = self.step_info()
+        result += self.eaten_info(Figure.Fraction.WHITE)
+        result += self.eaten_info(Figure.Fraction.BLACK)
         if self.check['white'] is True:
             result += "Белые под шахом \n"
         if self.check['black'] is True:
             result += "Чёрные под шахом \n"
+
+        result += self.separator
+        result += "\n|     " + letters + "       |\n|"
+        result += "    +-----------------+     |\n"
         for row in self.field:
-            result += str(row_cnt) + "  "
+            result += "| " + str(row_cnt) + "  | "
             for elem in row:
                 result += elem.__str__() + " "
-            result += " " + str(row_cnt) + "\n"
+            result += "|   " + str(row_cnt) + " |\n"
             row_cnt += 1
-        result += "\n   " + letters + "\n" + separator
+        result += "|    +-----------------+     |\n"
+        result += "|     " + letters + "       |\n" + self.separator
         return result
 
     def team_list(self, fraction):
@@ -264,7 +290,7 @@ class GameField:
             if enemy_team[i].may_attack(x_pos, y_pos):
                 danger_f.append(enemy_team[i])
         if len(danger_f) > 0:
-            print('Под угрозой {} от:'.format(unit_on.__str__())+ ' '.join([x.__str__() for x in danger_f]))
+            print('Под угрозой {} от: '.format(unit_on.__str__()) + ' '.join([x.__str__() for x in danger_f]))
         return danger_f
 
     def select_unit(self, column, row):
