@@ -32,7 +32,7 @@ class Manager:
             try:
                 column, row = data[0], data[1]
                 column = convert_column_to_digit(data[0])
-                row = convert_column_to_digit(int(row))-1
+                row = convert_column_to_digit(int(row)-1)
                 return column, row
             except:
                 print("Введена неправильная позиция, повторите ввод или введите <exit> для выхода")
@@ -41,11 +41,13 @@ class Manager:
                     return -1, -1
 
     def turn(self):
+        self.game_field.clean_empty()
         self.save_game_state()
         self.game_field.current_step += 1
         self.game_field.switch_turn()
 
     def choose_unit(self):
+        self.game_field.clean_empty()
         column, row = self.get_position_with_context("Выберите фигуру")
 
         if column == -1:
@@ -105,6 +107,7 @@ class Manager:
             elif command == "exit":
                 self.exit()
                 break
+
 
     def help(self):
         raise NotImplementedError()
