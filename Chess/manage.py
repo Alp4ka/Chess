@@ -47,8 +47,11 @@ class Manager:
             except:
                 print("Введена неправильная позиция, повторите ввод или введите <exit> для выхода")
                 data = input().split()
-                if data[0] == "exit":
-                    return Codes.EXIT, Codes.EXIT
+                if len(data) != 0:
+                    if data[0] == "exit":
+                        return Codes.EXIT, Codes.EXIT
+                    if data[0] == "back":
+                        return Codes.BACK, Codes.BACK
 
     def turn(self):
         self.game_field.clean_empty()
@@ -56,6 +59,8 @@ class Manager:
         self.game_field.current_step += 1
         self.save_game_state()
         self.game_field.selected = None
+        self.game_field.check['white'] = self.game_field.is_checked(Fraction.WHITE)
+        self.game_field.check['black'] = self.game_field.is_checked(Fraction.BLACK)
 
     def choose_unit(self):
         self.game_field.clean_empty()

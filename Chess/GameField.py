@@ -155,6 +155,10 @@ class GameField:
         result += "Съеденные {}: {}".format(Figure.Fraction.WHITE.value, ' '.join([x.__str__() for x in self.eaten[Figure.Fraction.WHITE.value]])) + "\n"
         result += "Съеденные {}: {}".format(Figure.Fraction.BLACK.value, ' '.join([x.__str__() for x in self.eaten[Figure.Fraction.BLACK.value]])) + "\n"
         result += "   " + letters + "\n\n"
+        if self.check['white'] is True:
+            result += "Белые под шахом \n"
+        if self.check['black'] is True:
+            result += "Чёрные под шахом \n"
         for row in self.field:
             result += str(row_cnt) + "  "
             for elem in row:
