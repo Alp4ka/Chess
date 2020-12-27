@@ -29,6 +29,7 @@ class GameField:
         self.eaten['black'] = list()
 
 
+        #TODO: check for empty selected for move command
         self.selected = None
         self.turn = Figure.Fraction.WHITE
         self.memory_stack = list()

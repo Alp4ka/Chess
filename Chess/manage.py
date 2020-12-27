@@ -13,23 +13,28 @@ class Manager:
         print(self.game_field)
         print()
 
+    def castle(self):
+        #TODO: если выбрана башня, то можно выполнить эту команду и сделать рокировку
+        pass
+
     def get_position_with_context(self, context):
         print(context)
 
         data = input().split()
 
-        if data[0] == "exit":
-            return -1, -1
+        if len(data) != 0:
+            if data[0] == "exit":
+                return -1, -1
 
         column = row = 0
         while True:
-            column, row = data[0], data[1]
 
             try:
+                column, row = data[0], data[1]
                 column = convert_column_to_digit(data[0])
-                row = convert_column_to_digit(int(row))
+                row = convert_column_to_digit(int(row))-1
                 return column, row
-            except ValueError:
+            except:
                 print("Введена неправильная позиция, повторите ввод или введите <exit> для выхода")
                 data = input().split()
                 if data[0] == "exit":
