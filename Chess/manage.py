@@ -45,7 +45,7 @@ class Manager:
                 row = convert_column_to_digit(int(row)-1)
                 return column, row
             except:
-                print("Введена неправильная позиция, повторите ввод или введите <exit> для выхода")
+                print("Введена неправильная позиция, повторите ввод или введите <back>/<exit> для выхода")
                 data = input()
                 if len(data) != 0:
                     if data == "exit":
@@ -92,7 +92,7 @@ class Manager:
                 self.turn()
                 return True
             except ValueError:
-                print("Данный ход недоступен, введите другую позицию или введите <exit> для выхода")
+                print("Данный ход недоступен, введите другую позицию или введите <back>/<exit> для выхода")
             except AttributeError:
                 print("Для начала выберите фигуру")
 
